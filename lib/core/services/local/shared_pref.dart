@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:bookia/features/auth/data/models/response/auth_response/user.dart';
+import 'package:bookia/features/auth/domain/entities/response/auth_response/user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,7 +11,7 @@ class SharedPref {
   static const String ktoken = "token";
   static const String kUserData = "kuserdata";
   static const String kImage = "kimage";
-  static init() async {
+  init() async {
     prefs = await SharedPreferences.getInstance();
   }
 

@@ -1,9 +1,14 @@
+import 'dart:developer';
+
+import 'package:bookia/core/services/api/base_response.dart';
+import 'package:bookia/core/services/api/failure.dart';
 import 'package:bookia/core/services/api/main_endpoints.dart';
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
 class DioProvider {
   static late Dio dio;
-  static init() {
+  init() {
     dio = Dio(BaseOptions(baseUrl: MainEndpoints.baseUrl));
   }
 
@@ -34,7 +39,7 @@ class DioProvider {
     }
   }
 
-  static Future<Map<String, dynamic>> get(
+  static Future<Either<Failure, dynamic>> get(
     endpoint, {
     Object? data,
     Map<String, dynamic>? queryParameters,
@@ -47,28 +52,31 @@ class DioProvider {
         queryParameters: queryParameters,
         options: Options(headers: headers),
       );
-      return response.data;
+
+      var res = BaseResponse.fromJson(response.data);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Right(res.data);
+      } else {
+        return Left(ServerFailure(res.message ?? " "));
+      }
     } on DioException catch (e) {
       if (e.response != null && e.response?.data is Map<String, dynamic>) {
-        return e.response!.data;
+        return Left(ServerFailure(e.toString()));
       }
-      return {
-        "status": e.response?.statusCode ?? 500,
-        "message": "Network error, please try again later",
-        "data": [],
-        "error": [],
-      };
+      return Left(ServerFailure(e.toString()));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 
-  static Future<Map<String, dynamic>> put(
+  static Future<Map<String, dynamic>> patch(
     endpoint, {
     required Object? data,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
   }) async {
     try {
-      Response response = await dio.put(
+      Response response = await dio.patch(
         endpoint,
         data: data,
         queryParameters: queryParameters,

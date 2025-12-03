@@ -1,4 +1,4 @@
-import 'package:bookia/features/auth/data/models/response/auth_response/data.dart';
+import 'package:bookia/features/auth/domain/entities/response/auth_response/data.dart';
 
 class AuthResponse {
   Data? data;

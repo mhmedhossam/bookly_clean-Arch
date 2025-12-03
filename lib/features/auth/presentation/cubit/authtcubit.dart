@@ -1,5 +1,7 @@
-import 'package:bookia/features/auth/data/models/request/auth_data.dart';
+import 'package:bookia/features/auth/domain/entities/request/auth_data.dart';
 import 'package:bookia/features/auth/data/repo/auth_repo.dart';
+import 'package:bookia/features/auth/domain/usecases/login_usecase.dart';
+import 'package:bookia/features/auth/domain/usecases/register_usecase.dart';
 import 'package:bookia/features/auth/presentation/cubit/authstates.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,13 +13,16 @@ class Authtcubit extends Cubit<Authstates> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final userNameController = TextEditingController();
-  Authtcubit() : super(InitialState());
+  LoginUseCase loginUseCase;
+  RegisterUseCase registerUseCase;
+  Authtcubit({required this.loginUseCase, required this.registerUseCase})
+    : super(InitialState());
 
   register() async {
     if (isClosed) return;
 
     emit(Authloading());
-    var res = await AuthRepo.register(
+    var res = await registerUseCase.call(
       AuthDataRequesr(
         email: emailController.text,
         password: passwordController.text,
@@ -27,35 +32,33 @@ class Authtcubit extends Cubit<Authstates> {
     );
     if (isClosed) return;
 
-    if (res.status != 201) {
-      emit(AuthFailure(errorMessage: res.message!));
-    } else {
-      emit(AuthSuccessed());
-    }
+    res.fold(
+      (l) => emit(AuthFailure(errorMessage: l.errorMessage)),
+      (r) => emit(AuthSuccessed()),
+    );
   }
 
   login() async {
-    try {
-      if (isClosed) return;
+    if (isClosed) return;
 
-      emit(Authloading());
+    emit(Authloading());
 
-      var res = await AuthRepo.login(
-        AuthDataRequesr(
-          email: emailController.text,
-          password: passwordController.text,
-        ),
-      );
-      if (isClosed) return;
+    var res = await loginUseCase.call(
+      AuthDataRequesr(
+        email: emailController.text,
+        password: passwordController.text,
+      ),
+    );
+    if (isClosed) return;
 
-      if (res.status != 200) {
-        emit(AuthFailure(errorMessage: res.message!));
-      } else {
+    res.fold(
+      (left) {
+        emit(AuthFailure(errorMessage: left.errorMessage));
+      },
+      (right) {
         emit(AuthSuccessed());
-      }
-    } on Exception catch (e) {
-      emit(AuthFailure(errorMessage: "hosooo"));
-    }
+      },
+    );
   }
 
   fogetPassword() async {

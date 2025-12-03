@@ -1,8 +1,8 @@
 import 'package:bookia/core/services/api/dio_provider.dart';
 import 'package:bookia/core/services/local/shared_pref.dart';
-import 'package:bookia/features/auth/data/models/request/auth_data.dart';
-import 'package:bookia/features/auth/data/models/response/auth_response/auth_response.dart';
-import 'package:bookia/features/auth/data/models/response/forget_password/forget_password.dart';
+import 'package:bookia/features/auth/domain/entities/request/auth_data.dart';
+import 'package:bookia/features/auth/domain/entities/response/auth_response/auth_response.dart';
+import 'package:bookia/features/auth/domain/entities/response/forget_password/forget_password.dart';
 import 'package:bookia/features/auth/data/repo/auth_endpoints.dart';
 
 class AuthRepo {
