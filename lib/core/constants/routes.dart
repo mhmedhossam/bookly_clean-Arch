@@ -1,6 +1,9 @@
 import 'package:bookia/core/di/service_locator.dart';
+import 'package:bookia/features/auth/domain/usecases/forget_pass_usecase.dart';
 import 'package:bookia/features/auth/domain/usecases/login_usecase.dart';
+import 'package:bookia/features/auth/domain/usecases/otp_verify_usecase.dart';
 import 'package:bookia/features/auth/domain/usecases/register_usecase.dart';
+import 'package:bookia/features/auth/domain/usecases/setNpass_usecase.dart';
 import 'package:bookia/features/auth/presentation/cubit/authtcubit.dart';
 import 'package:bookia/features/auth/presentation/view/create_new_password.dart';
 import 'package:bookia/features/auth/presentation/view/forget_password.dart';
@@ -124,10 +127,7 @@ class Routes {
         builder: (context, state) {
           final otp = state.extra as String;
           return BlocProvider(
-            create: (context) => Authtcubit(
-              loginUseCase: ServiceLocator.gi<LoginUseCase>(),
-              registerUseCase: ServiceLocator.gi<RegisterUseCase>(),
-            ),
+            create: (context) => ServiceLocator.gi<Authtcubit>(),
             child: CreateNewPassword(otp: otp),
           );
         },
@@ -136,10 +136,7 @@ class Routes {
       GoRoute(
         path: forgetPasswordScreen,
         builder: (context, state) => BlocProvider(
-          create: (context) => Authtcubit(
-            loginUseCase: ServiceLocator.gi<LoginUseCase>(),
-            registerUseCase: ServiceLocator.gi<RegisterUseCase>(),
-          ),
+          create: (context) => ServiceLocator.gi<Authtcubit>(),
           child: ForgetPassword(),
         ),
       ),
@@ -149,10 +146,7 @@ class Routes {
         builder: (context, state) {
           final email = state.extra as String;
           return BlocProvider(
-            create: (context) => Authtcubit(
-              loginUseCase: ServiceLocator.gi<LoginUseCase>(),
-              registerUseCase: ServiceLocator.gi<RegisterUseCase>(),
-            ),
+            create: (context) => ServiceLocator.gi<Authtcubit>(),
             child: OtpVerify(email: email),
           );
         },
@@ -164,20 +158,14 @@ class Routes {
       GoRoute(
         path: loginScreen,
         builder: (context, state) => BlocProvider(
-          create: (context) => Authtcubit(
-            loginUseCase: ServiceLocator.gi<LoginUseCase>(),
-            registerUseCase: ServiceLocator.gi<RegisterUseCase>(),
-          ),
+          create: (context) => ServiceLocator.gi<Authtcubit>(),
           child: LoginScreen(),
         ),
       ),
       GoRoute(
         path: registerScreen,
         builder: (context, state) => BlocProvider(
-          create: (context) => Authtcubit(
-            loginUseCase: ServiceLocator.gi<LoginUseCase>(),
-            registerUseCase: ServiceLocator.gi<RegisterUseCase>(),
-          ),
+          create: (context) => ServiceLocator.gi<Authtcubit>(),
           child: RegisterScreen(),
         ),
       ),
@@ -187,10 +175,7 @@ class Routes {
           final token = state.extra is String ? state.extra as String : "";
 
           return BlocProvider(
-            create: (context) => Authtcubit(
-              loginUseCase: ServiceLocator.gi<LoginUseCase>(),
-              registerUseCase: ServiceLocator.gi<RegisterUseCase>(),
-            ),
+            create: (context) => ServiceLocator.gi<Authtcubit>(),
             child: PassChanged(token: token),
           );
         },

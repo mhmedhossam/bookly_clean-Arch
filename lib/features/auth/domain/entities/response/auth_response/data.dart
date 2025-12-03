@@ -1,13 +1,13 @@
 import 'package:bookia/features/auth/domain/entities/response/auth_response/user.dart';
 
-class Data {
+class AuthResponse {
   AuthUSer? user;
   String? token;
 
-  Data({this.token, this.user});
+  AuthResponse({this.token, this.user});
 
-  factory Data.fromjson(json) {
-    return Data(
+  factory AuthResponse.fromJson(json) {
+    return AuthResponse(
       token: json?["token"] as String?,
       user: AuthUSer.fromJson(json?["user"]),
     );

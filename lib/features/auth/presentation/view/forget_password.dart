@@ -31,16 +31,16 @@ class ForgetPassword extends StatelessWidget {
           Navigation.pop(context);
         },
       ),
-      body: BlocListener<Authtcubit, Authstates>(
+      body: BlocListener<Authtcubit, AuthStates>(
         listener: (context, state) {
-          if (state is AuthSuccessed) {
+          if (state is AuthSucceeded) {
             Navigation.pop(context);
             Navigation.pushNamedTo(
               context,
               Routes.otpVerifyScreen,
               cubit.emailController.text,
             );
-          } else if (state is Authloading) {
+          } else if (state is AuthLoading) {
             showloadingDialog(context);
           } else if (state is AuthFailure) {
             Navigation.pop(context);
@@ -51,7 +51,7 @@ class ForgetPassword extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(22.0),
             child: Form(
-              key: cubit.formkey,
+              key: cubit.formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -83,8 +83,8 @@ class ForgetPassword extends StatelessWidget {
 
                   MainButton(
                     onPressed: () async {
-                      if (cubit.formkey.currentState!.validate()) {
-                        await cubit.fogetPassword();
+                      if (cubit.formKey.currentState!.validate()) {
+                        await cubit.forgetPassword();
                       }
                     },
                     text: "Send Code",

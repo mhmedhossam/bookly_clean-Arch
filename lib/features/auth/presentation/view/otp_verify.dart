@@ -31,16 +31,16 @@ class OtpVerify extends StatelessWidget {
         buttonText: "Resend",
         textButtonOnTap: () {},
       ),
-      body: BlocListener<Authtcubit, Authstates>(
+      body: BlocListener<Authtcubit, AuthStates>(
         listener: (context, state) {
-          if (state is AuthSuccessed) {
+          if (state is AuthSucceeded) {
             Navigation.pop(context);
             Navigation.pushNamedTo(
               context,
               Routes.createNewPassScreen,
               cubit.otpController.text,
             );
-          } else if (state is Authloading) {
+          } else if (state is AuthLoading) {
             showloadingDialog(context);
           } else if (state is AuthFailure) {
             Navigation.pop(context);
@@ -51,7 +51,7 @@ class OtpVerify extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(22.0),
             child: Form(
-              key: cubit.formkey,
+              key: cubit.formKey,
               child: Column(
                 children: [
                   Text("OTP Verification ", style: TextStyles.textStyle30),
@@ -104,8 +104,8 @@ class OtpVerify extends StatelessWidget {
 
                   MainButton(
                     onPressed: () {
-                      if (cubit.formkey.currentState!.validate()) {
-                        cubit.otpVerfyy(email);
+                      if (cubit.formKey.currentState!.validate()) {
+                        cubit.otpVerify(email);
                       }
                     },
                     text: "verify",

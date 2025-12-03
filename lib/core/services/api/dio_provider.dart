@@ -17,11 +17,12 @@ class DioProvider {
     dio = Dio(BaseOptions(baseUrl: MainEndpoints.baseUrl));
   }
 
-  static Future<Map<String, dynamic>> post(
+  static Future<Either<Failure, T>> post<T>(
     endpoint, {
     required Object? data,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
+    T Function(dynamic)? json,
   }) async {
     try {
       Response response = await dio.post(
@@ -30,17 +31,15 @@ class DioProvider {
         queryParameters: queryParameters,
         options: Options(headers: headers),
       );
-      return response.data;
-    } on DioException catch (e) {
-      if (e.response != null && e.response?.data is Map<String, dynamic>) {
-        return e.response!.data;
+      var res = BaseResponse.fromJson(response.data);
+      if (res.status != 200 && res.status != 201) {
+        return Left(ServerFailure(res.message ?? ""));
       }
-      return {
-        "status": e.response?.statusCode ?? 500,
-        "message": "Network error, please try again later",
-        "data": [],
-        "error": [],
-      };
+      return Right(json!(res.data));
+    } on DioException catch (e) {
+      return handleError(e);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 
@@ -62,14 +61,10 @@ class DioProvider {
       var res = BaseResponse.fromJson(response.data);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Right(fromJson!(res.data));
-      } else {
-        return Left(ServerFailure(res.message ?? " "));
       }
+      return Left(ServerFailure(res.message ?? " "));
     } on DioException catch (e) {
-      if (e.response != null && e.response?.data is Map<String, dynamic>) {
-        return Left(ServerFailure(e.toString()));
-      }
-      return Left(ServerFailure(e.toString()));
+      return handleError(e);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }

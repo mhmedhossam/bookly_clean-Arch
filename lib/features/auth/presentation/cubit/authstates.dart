@@ -1,14 +1,14 @@
-abstract class Authstates {}
+abstract class AuthStates {}
 
-class InitialState extends Authstates {}
+class InitialState extends AuthStates {}
 
-class Authloading extends Authstates {}
+class AuthLoading extends AuthStates {}
 
-class AuthSuccessed extends Authstates {}
+class AuthSucceeded extends AuthStates {}
 
-class AuthFailure extends Authstates {
+class AuthFailure extends AuthStates {
   String errorMessage;
   AuthFailure({required this.errorMessage});
 }
 
-class OtpSuccees extends Authstates {}
+class OtpSuccees extends AuthStates {}

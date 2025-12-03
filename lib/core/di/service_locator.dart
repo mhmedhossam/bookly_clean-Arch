@@ -4,8 +4,13 @@ import 'package:bookia/features/auth/data/data_source/auth_datasource.dart';
 import 'package:bookia/features/auth/data/data_source/auth_datasource_impl.dart';
 import 'package:bookia/features/auth/data/repo/auth_repository_Impl.dart';
 import 'package:bookia/features/auth/domain/repo/auth_repository.dart';
+import 'package:bookia/features/auth/domain/usecases/%D9%90auth_usecase.dart';
+import 'package:bookia/features/auth/domain/usecases/forget_pass_usecase.dart';
 import 'package:bookia/features/auth/domain/usecases/login_usecase.dart';
+import 'package:bookia/features/auth/domain/usecases/otp_verify_usecase.dart';
 import 'package:bookia/features/auth/domain/usecases/register_usecase.dart';
+import 'package:bookia/features/auth/domain/usecases/setNpass_usecase.dart';
+import 'package:bookia/features/auth/presentation/cubit/authtcubit.dart';
 import 'package:bookia/features/home/data/data_source/home_datasource.dart';
 import 'package:bookia/features/home/data/data_source/home_datasource_impl.dart';
 import 'package:bookia/features/home/data/repo/Home_repository_Impl.dart';
@@ -39,13 +44,25 @@ class ServiceLocator {
       () => HomeRepositoryImpl(homeDatasource: gi<HomeDatasource>()),
     );
     //register usecases
-
+    //Auth
+    gi.registerLazySingleton<ForgetPassUseCase>(
+      () => ForgetPassUseCase(authRepository: gi<AuthRepository>()),
+    );
+    gi.registerLazySingleton<OtpVerifyUseCase>(
+      () => OtpVerifyUseCase(authRepository: gi<AuthRepository>()),
+    );
+    gi.registerLazySingleton<SetNPassUseCase>(
+      () => SetNPassUseCase(authRepository: gi<AuthRepository>()),
+    );
     gi.registerLazySingleton<LoginUseCase>(
       () => LoginUseCase(authRepository: gi<AuthRepository>()),
     );
     gi.registerLazySingleton<RegisterUseCase>(
       () => RegisterUseCase(authRepository: gi<AuthRepository>()),
     );
+    //  ------------------------------
+
+    //home
     gi.registerLazySingleton<GetAllProductUseCase>(
       () => GetAllProductUseCase(homeRepository: gi<HomeRepository>()),
     );
@@ -58,13 +75,18 @@ class ServiceLocator {
     gi.registerLazySingleton<GetSliderUseCase>(
       () => GetSliderUseCase(homeRepository: gi<HomeRepository>()),
     );
+    //  ------------------------------
+
     // //register cubits
 
-    // gi.registerLazySingleton<Authtcubit>(
-    //   () => Authtcubit(
-    //     loginUseCase: gi<LoginUseCase>(),
-    //     registerUseCase: gi<RegisterUseCase>(),
-    //   ),
-    // );
+    gi.registerFactory<Authtcubit>(
+      () => Authtcubit(
+        forgetPassUseCase: ServiceLocator.gi<ForgetPassUseCase>(),
+        otpVerifyUseCase: ServiceLocator.gi<OtpVerifyUseCase>(),
+        setNPassUseCase: ServiceLocator.gi<SetNPassUseCase>(),
+        loginUseCase: ServiceLocator.gi<LoginUseCase>(),
+        registerUseCase: ServiceLocator.gi<RegisterUseCase>(),
+      ),
+    );
   }
 }

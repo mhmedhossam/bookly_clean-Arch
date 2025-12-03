@@ -26,11 +26,11 @@ class CreateNewPassword extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: CustomBackButton(),
       ),
-      body: BlocListener<Authtcubit, Authstates>(
+      body: BlocListener<Authtcubit, AuthStates>(
         listener: (context, state) {
-          if (state is Authloading) {
+          if (state is AuthLoading) {
             showloadingDialog(context);
-          } else if (state is AuthSuccessed) {
+          } else if (state is AuthSucceeded) {
             context.pop();
             Navigation.pushNamedandRemoveUntilTo(
               context,
@@ -45,7 +45,7 @@ class CreateNewPassword extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(22.0),
             child: Form(
-              key: cubit.formkey,
+              key: cubit.formKey,
               child: Column(
                 children: [
                   Text("Create new password ", style: TextStyles.textStyle30),
@@ -67,7 +67,7 @@ class CreateNewPassword extends StatelessWidget {
                   ),
                   Gap(13),
                   CustomTextField(
-                    controller: cubit.confirmpasswordController,
+                    controller: cubit.confirmPasswordController,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "please enter your password";
@@ -81,7 +81,7 @@ class CreateNewPassword extends StatelessWidget {
                   Gap(13),
                   MainButton(
                     onPressed: () {
-                      if (cubit.formkey.currentState!.validate()) {
+                      if (cubit.formKey.currentState!.validate()) {
                         cubit.setNewPassword(otp);
                       }
                     },

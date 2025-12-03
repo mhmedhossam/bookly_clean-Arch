@@ -1,31 +1,31 @@
-class AuthDataRequesr {
+class AuthDataRequest {
   String? name;
   String? email;
   String? password;
-  String? newpassword;
+  String? newPassword;
   String? otp;
   String? confirmPass;
-  String? newconfirmPass;
+  String? newConfirmPass;
 
-  AuthDataRequesr({
+  AuthDataRequest({
     this.confirmPass,
     this.email,
     this.name,
     this.password,
     this.otp,
-    this.newconfirmPass,
-    this.newpassword,
+    this.newConfirmPass,
+    this.newPassword,
   });
 
-  factory AuthDataRequesr.fromjson(Map<String, dynamic> json) {
-    return AuthDataRequesr(
+  factory AuthDataRequest.fromjson(Map<String, dynamic> json) {
+    return AuthDataRequest(
       name: json["name"],
       confirmPass: json["password_confirmation"],
       email: json["email"],
       password: json["password"],
       otp: json["verify_code"],
-      newconfirmPass: json["new_password_confirmation"],
-      newpassword: json["new_password"],
+      newConfirmPass: json["new_password_confirmation"],
+      newPassword: json["new_password"],
     );
   }
 
@@ -36,8 +36,8 @@ class AuthDataRequesr {
       "password": password,
       "password_confirmation": confirmPass,
       "verify_code": otp,
-      "new_password": newpassword,
-      "new_password_confirmation": newconfirmPass,
+      "new_password": newPassword,
+      "new_password_confirmation": newConfirmPass,
     };
   }
 }

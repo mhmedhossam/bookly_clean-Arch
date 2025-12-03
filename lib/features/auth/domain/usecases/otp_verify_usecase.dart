@@ -4,9 +4,9 @@ import 'package:bookia/features/auth/domain/entities/response/auth_response/data
 import 'package:bookia/features/auth/domain/usecases/%D9%90auth_usecase.dart';
 import 'package:dartz/dartz.dart';
 
-class LoginUseCase extends AuthUseCase {
-  LoginUseCase({required super.authRepository});
+class OtpVerifyUseCase extends AuthUseCase {
+  OtpVerifyUseCase({required super.authRepository});
   Future<Either<Failure, AuthResponse>> call(AuthDataRequest authDataRequest) {
-    return authRepository.login(authDataRequest);
+    return authRepository.otpVerifyy(authDataRequest);
   }
 }

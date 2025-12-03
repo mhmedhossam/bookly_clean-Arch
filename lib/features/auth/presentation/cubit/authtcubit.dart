@@ -1,32 +1,43 @@
+import 'package:bookia/core/services/local/shared_pref.dart';
 import 'package:bookia/features/auth/domain/entities/request/auth_data.dart';
-import 'package:bookia/features/auth/data/repo/auth_repo.dart';
+import 'package:bookia/features/auth/domain/usecases/forget_pass_usecase.dart';
 import 'package:bookia/features/auth/domain/usecases/login_usecase.dart';
+import 'package:bookia/features/auth/domain/usecases/otp_verify_usecase.dart';
 import 'package:bookia/features/auth/domain/usecases/register_usecase.dart';
+import 'package:bookia/features/auth/domain/usecases/setNpass_usecase.dart';
 import 'package:bookia/features/auth/presentation/cubit/authstates.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Authtcubit extends Cubit<Authstates> {
-  final formkey = GlobalKey<FormState>();
-  final confirmpasswordController = TextEditingController();
+class Authtcubit extends Cubit<AuthStates> {
+  final formKey = GlobalKey<FormState>();
+  final confirmPasswordController = TextEditingController();
   final otpController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final userNameController = TextEditingController();
   LoginUseCase loginUseCase;
   RegisterUseCase registerUseCase;
-  Authtcubit({required this.loginUseCase, required this.registerUseCase})
-    : super(InitialState());
+  OtpVerifyUseCase otpVerifyUseCase;
+  ForgetPassUseCase forgetPassUseCase;
+  SetNPassUseCase setNPassUseCase;
+  Authtcubit({
+    required this.loginUseCase,
+    required this.registerUseCase,
+    required this.forgetPassUseCase,
+    required this.otpVerifyUseCase,
+    required this.setNPassUseCase,
+  }) : super(InitialState());
 
   register() async {
     if (isClosed) return;
 
-    emit(Authloading());
+    emit(AuthLoading());
     var res = await registerUseCase.call(
-      AuthDataRequesr(
+      AuthDataRequest(
         email: emailController.text,
         password: passwordController.text,
-        confirmPass: confirmpasswordController.text,
+        confirmPass: confirmPasswordController.text,
         name: userNameController.text,
       ),
     );
@@ -34,17 +45,17 @@ class Authtcubit extends Cubit<Authstates> {
 
     res.fold(
       (l) => emit(AuthFailure(errorMessage: l.errorMessage)),
-      (r) => emit(AuthSuccessed()),
+      (r) => emit(AuthSucceeded()),
     );
   }
 
   login() async {
     if (isClosed) return;
 
-    emit(Authloading());
+    emit(AuthLoading());
 
     var res = await loginUseCase.call(
-      AuthDataRequesr(
+      AuthDataRequest(
         email: emailController.text,
         password: passwordController.text,
       ),
@@ -52,66 +63,77 @@ class Authtcubit extends Cubit<Authstates> {
     if (isClosed) return;
 
     res.fold(
-      (left) {
-        emit(AuthFailure(errorMessage: left.errorMessage));
+      (l) {
+        emit(AuthFailure(errorMessage: l.errorMessage));
       },
-      (right) {
-        emit(AuthSuccessed());
+      (r) {
+        SharedPref.setToken(r.token);
+        SharedPref.setUserCache(r.user);
+        emit(AuthSucceeded());
       },
     );
   }
 
-  fogetPassword() async {
+  forgetPassword() async {
     if (isClosed) return;
 
-    emit(Authloading());
+    emit(AuthLoading());
 
-    var res = await AuthRepo.forgetPassword(
-      AuthDataRequesr(email: emailController.text),
+    var res = await forgetPassUseCase.call(
+      AuthDataRequest(email: emailController.text),
     );
     if (isClosed) return;
 
-    if (res.status != 200) {
-      emit(AuthFailure(errorMessage: res.message!));
-    } else {
-      emit(AuthSuccessed());
-    }
+    res.fold(
+      (l) {
+        emit(AuthFailure(errorMessage: l.errorMessage));
+      },
+      (r) {
+        emit(AuthSucceeded());
+      },
+    );
   }
 
-  otpVerfyy(String email) async {
+  otpVerify(String email) async {
     if (isClosed) return;
 
-    emit(Authloading());
+    emit(AuthLoading());
 
-    var res = await AuthRepo.otpVerifyy(
-      AuthDataRequesr(email: email, otp: otpController.text),
+    var res = await otpVerifyUseCase.call(
+      AuthDataRequest(email: email, otp: otpController.text),
     );
     if (isClosed) return;
 
-    if (res.status != 200) {
-      emit(AuthFailure(errorMessage: res.message!));
-    } else {
-      emit(AuthSuccessed());
-    }
+    res.fold(
+      (l) {
+        emit(AuthFailure(errorMessage: l.errorMessage));
+      },
+      (r) {
+        emit(AuthSucceeded());
+      },
+    );
   }
 
   setNewPassword(String otp) async {
     if (isClosed) return;
 
-    emit(Authloading());
-    var res = await AuthRepo.setNewPassword(
-      AuthDataRequesr(
+    emit(AuthLoading());
+    var res = await setNPassUseCase.call(
+      AuthDataRequest(
         otp: otp,
-        newpassword: passwordController.text,
-        newconfirmPass: confirmpasswordController.text,
+        newPassword: passwordController.text,
+        newConfirmPass: confirmPasswordController.text,
       ),
     );
     if (isClosed) return;
 
-    if (res.status != 200) {
-      emit(AuthFailure(errorMessage: res.message!));
-    } else {
-      emit(AuthSuccessed());
-    }
+    res.fold(
+      (l) {
+        emit(AuthFailure(errorMessage: l.errorMessage));
+      },
+      (r) {
+        emit(AuthSucceeded());
+      },
+    );
   }
 }

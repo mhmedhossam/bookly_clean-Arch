@@ -32,15 +32,15 @@ class LoginScreen extends StatelessWidget {
           Navigation.pushReplacementNamed(context, Routes.registerScreen);
         },
       ),
-      body: BlocListener<Authtcubit, Authstates>(
+      body: BlocListener<Authtcubit, AuthStates>(
         listener: (context, state) {
-          if (state is Authloading) {
+          if (state is AuthLoading) {
             showloadingDialog(context);
           } else if (state is AuthFailure) {
             Navigation.pop(context);
 
             showMyDialog(context, state.errorMessage);
-          } else if (state is AuthSuccessed) {
+          } else if (state is AuthSucceeded) {
             Navigation.pop(context);
             Navigation.pushNamedandRemoveUntilTo(context, Routes.mainAppScreen);
           }
@@ -57,7 +57,7 @@ _loginBody(BuildContext context) {
     child: Padding(
       padding: EdgeInsets.all(22.0),
       child: Form(
-        key: cubit.formkey,
+        key: cubit.formKey,
         child: Column(
           children: [
             Text(
@@ -112,7 +112,7 @@ _loginBody(BuildContext context) {
 
             MainButton(
               onPressed: () {
-                if (cubit.formkey.currentState!.validate()) {
+                if (cubit.formKey.currentState!.validate()) {
                   context.read<Authtcubit>().login();
                 }
               },
