@@ -30,13 +30,14 @@ class SearchScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(22, 5, 22, 5),
             child: Column(
+              mainAxisSize: MainAxisSize.max,
               children: [
                 CustomTextField(
                   prefixIcon: Icon(Icons.search),
                   hintText: "search",
                   controller: cubit.searchController,
                   onChanged: (value) {
-                    cubit.serch();
+                    cubit.search();
                   },
                 ),
 
@@ -45,7 +46,15 @@ class SearchScreen extends StatelessWidget {
                     if (state is HomeLoading) {
                       return SizedBox.shrink();
                     } else if (state is HomeSucceed) {
+                      if (cubit.searchProduct.isEmpty) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 50),
+                          child: Text("no product in this word"),
+                        );
+                      }
+
                       return GridView.builder(
+                        padding: EdgeInsets.only(top: 20),
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(

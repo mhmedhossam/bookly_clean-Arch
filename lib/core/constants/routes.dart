@@ -1,8 +1,4 @@
 import 'package:bookia/core/di/service_locator.dart';
-import 'package:bookia/features/auth/data/data_source/auth_datasource.dart';
-import 'package:bookia/features/auth/data/data_source/auth_datasource_impl.dart';
-import 'package:bookia/features/auth/data/repo/auth_repository_Impl.dart';
-import 'package:bookia/features/auth/domain/repo/auth_repository.dart';
 import 'package:bookia/features/auth/domain/usecases/login_usecase.dart';
 import 'package:bookia/features/auth/domain/usecases/register_usecase.dart';
 import 'package:bookia/features/auth/presentation/cubit/authtcubit.dart';
@@ -15,7 +11,11 @@ import 'package:bookia/features/auth/presentation/view/register_screen.dart';
 import 'package:bookia/features/cartlist/presentation/cubit/card_cubit.dart';
 import 'package:bookia/features/cartlist/presentation/views/place_y_order.dart';
 import 'package:bookia/features/cartlist/presentation/views/success_view.dart';
-import 'package:bookia/features/home/data/models/response/all_product_model/all_product_model/product.dart';
+import 'package:bookia/features/home/domain/entities/all_products_model/product.dart';
+import 'package:bookia/features/home/domain/usecases/get_all_product_usecase.dart';
+import 'package:bookia/features/home/domain/usecases/get_b_seller_p_usecase.dart';
+import 'package:bookia/features/home/domain/usecases/get_search_usecase.dart';
+import 'package:bookia/features/home/domain/usecases/get_slider_usecase.dart';
 import 'package:bookia/features/home/presentation/cubit/home_cubit.dart';
 import 'package:bookia/features/home/presentation/view/details_view.dart';
 import 'package:bookia/features/home/presentation/view/search_view.dart';
@@ -85,7 +85,12 @@ class Routes {
       GoRoute(
         path: searchScreen,
         builder: (context, state) => BlocProvider(
-          create: (context) => HomeCubit(),
+          create: (context) => HomeCubit(
+            getAllProductUseCase: ServiceLocator.gi<GetAllProductUseCase>(),
+            getBSellerPUseCase: ServiceLocator.gi<GetBSellerPUseCase>(),
+            getSearchUseCase: ServiceLocator.gi<GetSearchUseCase>(),
+            getSliderUseCase: ServiceLocator.gi<GetSliderUseCase>(),
+          ),
           child: SearchScreen(),
         ),
       ),
@@ -96,7 +101,12 @@ class Routes {
           Product product = extra["product"] as Product;
           final source = extra["source"] as String;
           return BlocProvider(
-            create: (context) => HomeCubit(),
+            create: (context) => HomeCubit(
+              getAllProductUseCase: ServiceLocator.gi<GetAllProductUseCase>(),
+              getBSellerPUseCase: ServiceLocator.gi<GetBSellerPUseCase>(),
+              getSearchUseCase: ServiceLocator.gi<GetSearchUseCase>(),
+              getSliderUseCase: ServiceLocator.gi<GetSliderUseCase>(),
+            ),
             child: DetailsScreen(product: product, source: source),
           );
         },

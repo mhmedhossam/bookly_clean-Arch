@@ -1,4 +1,4 @@
-import 'package:bookia/features/home/data/models/response/all_product_model/all_product_model/product.dart';
+import 'package:bookia/features/home/domain/entities/all_products_model/product.dart';
 
 import 'link.dart';
 

@@ -3,7 +3,7 @@ import 'package:bookia/core/constants/navigation.dart';
 import 'package:bookia/core/constants/routes.dart';
 import 'package:bookia/core/services/local/shared_pref.dart';
 import 'package:bookia/core/utils/text_styles.dart';
-import 'package:bookia/features/home/data/models/response/all_product_model/all_product_model/product.dart';
+import 'package:bookia/features/home/domain/entities/all_products_model/product.dart';
 import 'package:bookia/features/home/presentation/cubit/home_cubit.dart';
 import 'package:bookia/features/home/presentation/cubit/home_states.dart';
 import 'package:bookia/features/home/presentation/widgets/book_card.dart';

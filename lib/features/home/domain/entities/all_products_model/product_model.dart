@@ -2,14 +2,14 @@ import 'links.dart';
 import 'meta.dart';
 import 'product.dart';
 
-class Data {
+class ProductModel {
   List<Product>? products;
   Meta? meta;
   Links? links;
 
-  Data({this.products, this.meta, this.links});
+  ProductModel({this.products, this.meta, this.links});
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
     products: (json['products'] as List<dynamic>?)
         ?.map((e) => Product.fromJson(e as Map<String, dynamic>))
         .toList(),

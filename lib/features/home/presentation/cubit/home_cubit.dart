@@ -1,11 +1,17 @@
+import 'package:bookia/core/services/api/dio_provider.dart';
+import 'package:bookia/core/services/api/failure.dart';
 import 'package:bookia/features/cartlist/data/repo/cardlist_repo.dart';
-import 'package:bookia/features/home/data/models/response/all_product_model/all_product_model/all_product_model.dart';
-import 'package:bookia/features/home/data/models/response/all_product_model/all_product_model/product.dart';
-import 'package:bookia/features/home/data/models/response/slider_model/home_model.dart';
-import 'package:bookia/features/home/data/models/response/slider_model/slider.dart';
-import 'package:bookia/features/home/data/repo/home_repo.dart';
+import 'package:bookia/features/home/domain/entities/all_products_model/product_model.dart';
+import 'package:bookia/features/home/domain/entities/all_products_model/product.dart';
+import 'package:bookia/features/home/domain/entities/slider_model/home_slider_model.dart';
+import 'package:bookia/features/home/domain/entities/slider_model/slider.dart';
+import 'package:bookia/features/home/domain/usecases/get_all_product_usecase.dart';
+import 'package:bookia/features/home/domain/usecases/get_b_seller_p_usecase.dart';
+import 'package:bookia/features/home/domain/usecases/get_search_usecase.dart';
+import 'package:bookia/features/home/domain/usecases/get_slider_usecase.dart';
 import 'package:bookia/features/home/presentation/cubit/home_states.dart';
 import 'package:bookia/features/wishlist/data/repo/wish_repo.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,64 +20,70 @@ class HomeCubit extends Cubit<HomeStates> {
   List<Product> bestProducts = [];
   List<Product> products = [];
   List<Product> searchProduct = [];
+
+  GetSliderUseCase getSliderUseCase;
+  GetSearchUseCase getSearchUseCase;
+  GetBSellerPUseCase getBSellerPUseCase;
+  GetAllProductUseCase getAllProductUseCase;
   final searchController = TextEditingController();
-  HomeCubit() : super(InitialState());
+  HomeCubit({
+    required this.getAllProductUseCase,
+    required this.getBSellerPUseCase,
+    required this.getSearchUseCase,
+    required this.getSliderUseCase,
+  }) : super(InitialState());
 
   getHome() async {
-    try {
-      emit(HomeLoading());
-      if (isClosed) return;
-
-      final response = await Future.wait([
-        HomeRepo.getSlider(),
-        HomeRepo.getBestSellerPduct(),
-        HomeRepo.getAllProduct(),
-      ]);
-      if (isClosed) return;
-
-      final sliderRes = response[0] as HomeModel;
-      final bestSellerRes = response[1] as ProductsModel;
-      final productRes = response[2] as ProductsModel;
-
-      if (sliderRes.status != 200) {
-        emit(
-          HomeFailure(message: sliderRes.message ?? "error try again later"),
-        );
-        return;
-      }
-      if (bestSellerRes.status != 200) {
-        emit(
-          HomeFailure(
-            message: bestSellerRes.message ?? " error try again later",
-          ),
-        );
-        return;
-      }
-      if (productRes.status != 200) {
-        emit(
-          HomeFailure(message: productRes.message ?? " error try again later"),
-        );
-        return;
-      }
-      sliders = sliderRes.data?.sliders ?? [];
-      bestProducts = bestSellerRes.data?.products ?? [];
-      products = productRes.data?.products ?? [];
-
-      emit(HomeSucceed());
-    } catch (e) {
-      emit(HomeFailure(message: "error please try again later"));
-    }
-  }
-
-  serch() async {
     emit(HomeLoading());
     if (isClosed) return;
-    var res = await HomeRepo.getSearch(searchController.text);
-    if (res.status != 200) {
-      emit(HomeFailure(message: res.message ?? ""));
+
+    final response = await Future.wait([
+      getSliderUseCase.call(),
+      getBSellerPUseCase.call(),
+      getAllProductUseCase.call(),
+    ]);
+    if (isClosed) return;
+
+    final sliderRes = response[0] as Either<Failure, HomeSliderModel>;
+    final bestSellerRes = response[1] as Either<Failure, ProductModel>;
+    final productRes = response[2] as Either<Failure, ProductModel>;
+
+    if (sliderRes.isLeft()) {
+      emit(HomeFailure(message: sliderRes.getLeft().errorMessage));
+
+      return;
     } else {
+      sliders = sliderRes.getRight().sliders ?? [];
+    }
+
+    if (bestSellerRes.isLeft()) {
+      emit(HomeFailure(message: bestSellerRes.getLeft().errorMessage));
+      return;
+    } else {
+      bestProducts = bestSellerRes.getRight().products ?? [];
+    }
+
+    if (productRes.isLeft()) {
+      emit(HomeFailure(message: productRes.getLeft().errorMessage));
+      return;
+    } else {
+      products = productRes.getRight().products ?? [ ] ;
+    }
+    emit(HomeSucceed());
+
+    //
+  }
+
+  search() async {
+    emit(HomeLoading());
+    if (isClosed) return;
+    var res = await getSearchUseCase.call(searchController.text);
+
+    if (res.isLeft()) {
+      emit(HomeFailure(message: res.getLeft().errorMessage));
+    } else {
+      searchProduct = res.getRight().products ?? [];
       emit(HomeSucceed());
-      searchProduct = res.data?.products ?? [];
     }
   }
 

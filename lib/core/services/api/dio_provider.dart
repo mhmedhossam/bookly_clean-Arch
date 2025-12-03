@@ -6,6 +6,11 @@ import 'package:bookia/core/services/api/main_endpoints.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
+extension EitherX<L, R> on Either<L, R> {
+  R getRight() => fold((l) => throw Exception('No Right'), (r) => r);
+  L getLeft() => fold((l) => l, (r) => throw Exception('No Left'));
+}
+
 class DioProvider {
   static late Dio dio;
   init() {
@@ -39,11 +44,12 @@ class DioProvider {
     }
   }
 
-  static Future<Either<Failure, dynamic>> get(
+  static Future<Either<Failure, T>> get<T>(
     endpoint, {
     Object? data,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
+    T Function(dynamic)? fromJson,
   }) async {
     try {
       Response response = await dio.get(
@@ -55,7 +61,7 @@ class DioProvider {
 
       var res = BaseResponse.fromJson(response.data);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return Right(res.data);
+        return Right(fromJson!(res.data));
       } else {
         return Left(ServerFailure(res.message ?? " "));
       }
