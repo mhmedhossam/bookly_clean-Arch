@@ -60,16 +60,18 @@ class DioProvider {
         queryParameters: queryParameters,
         options: Options(headers: headers),
       );
-
       var res = BaseResponse.fromJson(response.data);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return Right(fromJson!(res.data));
+        if (res.data is Map<String, dynamic> || res.data is List<dynamic>) {
+          return Right(fromJson!(res.data));
+        }
       }
-      return Left(ServerFailure(res.message ?? " "));
+
+      return Right(fromJson!({}));
     } on DioException catch (e) {
       return handleError(e);
     } catch (e) {
-      print(e);
       return Left(ServerFailure(e.toString()));
     }
   }

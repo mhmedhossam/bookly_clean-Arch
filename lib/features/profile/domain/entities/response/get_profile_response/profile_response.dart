@@ -1,4 +1,4 @@
-class Data {
+class ProfileResponse {
   int? id;
   String? name;
   String? email;
@@ -8,7 +8,7 @@ class Data {
   bool? emailVerified;
   String? image;
 
-  Data({
+  ProfileResponse({
     this.address,
     this.city,
     this.email,
@@ -19,8 +19,8 @@ class Data {
     this.phone,
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) {
-    return Data(
+  factory ProfileResponse.fromJson(Map<String, dynamic> json) {
+    return ProfileResponse(
       id: json['id'],
       name: json['name'],
       email: json['email'],

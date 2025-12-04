@@ -23,6 +23,8 @@ import 'package:bookia/features/home/presentation/cubit/home_cubit.dart';
 import 'package:bookia/features/home/presentation/view/details_view.dart';
 import 'package:bookia/features/home/presentation/view/search_view.dart';
 import 'package:bookia/features/main/main_app_screen.dart';
+import 'package:bookia/features/profile/domain/usecases/get_my_orders_usecase.dart';
+import 'package:bookia/features/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:bookia/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:bookia/features/profile/presentation/views/edit_profile.dart';
 import 'package:bookia/features/profile/presentation/views/my_orders.dart';
@@ -58,14 +60,20 @@ class Routes {
       GoRoute(
         path: myOrderScreen,
         builder: (context, state) => BlocProvider(
-          create: (context) => ProfileCubit()..getMyOrders(),
+          create: (context) => ProfileCubit(
+            getMyOrdersUseCase: ServiceLocator.gi<GetMyOrdersUseCase>(),
+            updateProfileUseCase: ServiceLocator.gi<UpdateProfileUseCase>(),
+          )..getMyOrders(),
           child: MyOrders(),
         ),
       ),
       GoRoute(
         path: updatePasswordScreen,
         builder: (context, state) => BlocProvider(
-          create: (context) => ProfileCubit(),
+          create: (context) => ProfileCubit(
+            getMyOrdersUseCase: ServiceLocator.gi<GetMyOrdersUseCase>(),
+            updateProfileUseCase: ServiceLocator.gi<UpdateProfileUseCase>(),
+          ),
           child: UpdatePassword(),
         ),
       ),
@@ -73,7 +81,10 @@ class Routes {
       GoRoute(
         path: editprofile,
         builder: (context, state) => BlocProvider(
-          create: (context) => ProfileCubit()..initData(),
+          create: (context) => ProfileCubit(
+            getMyOrdersUseCase: ServiceLocator.gi<GetMyOrdersUseCase>(),
+            updateProfileUseCase: ServiceLocator.gi<UpdateProfileUseCase>(),
+          )..initData(),
           child: EditProfile(),
         ),
       ),

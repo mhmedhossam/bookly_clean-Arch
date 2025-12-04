@@ -19,6 +19,12 @@ import 'package:bookia/features/home/domain/usecases/get_all_product_usecase.dar
 import 'package:bookia/features/home/domain/usecases/get_b_seller_p_usecase.dart';
 import 'package:bookia/features/home/domain/usecases/get_search_usecase.dart';
 import 'package:bookia/features/home/domain/usecases/get_slider_usecase.dart';
+import 'package:bookia/features/profile/data/profile_data_source/profile_data_source.dart';
+import 'package:bookia/features/profile/data/profile_data_source/profile_data_source_impl.dart';
+import 'package:bookia/features/profile/data/repo/profile_repositoryImpl.dart';
+import 'package:bookia/features/profile/domain/repo/profile_repository.dart';
+import 'package:bookia/features/profile/domain/usecases/get_my_orders_usecase.dart';
+import 'package:bookia/features/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:bookia/features/wishlist/data/repo/wish_repository_impl.dart';
 import 'package:bookia/features/wishlist/data/wishlist_data_source/wishlist_data_source_impl.dart';
 import 'package:bookia/features/wishlist/data/wishlist_data_source/wishlist_datasource.dart';
@@ -46,6 +52,7 @@ class ServiceLocator {
     gi.registerLazySingleton<WishlistDatasource>(
       () => WishlistDataSourceImpl(),
     );
+    gi.registerLazySingleton<ProfileDataSource>(() => ProfileDataSourceImpl());
     // register reposiatories
 
     gi.registerLazySingleton<AuthRepository>(
@@ -57,6 +64,10 @@ class ServiceLocator {
     gi.registerLazySingleton<WishlistRepository>(
       () => WishRepositoryImpl(wishlistDatasource: gi<WishlistDatasource>()),
     );
+    gi.registerLazySingleton<ProfileRepository>(
+      () => ProfileRepositoryImpl(profileDataSource: gi<ProfileDataSource>()),
+    );
+
     //register usecases
     //Auth
     gi.registerLazySingleton<ForgetPassUseCase>(
@@ -101,6 +112,14 @@ class ServiceLocator {
     );
     gi.registerLazySingleton<GetWishUseCase>(
       () => GetWishUseCase(wishlistRepository: gi<WishlistRepository>()),
+    );
+    //profile
+
+    gi.registerLazySingleton<GetMyOrdersUseCase>(
+      () => GetMyOrdersUseCase(profileRepository: gi<ProfileRepository>()),
+    );
+    gi.registerLazySingleton<UpdateProfileUseCase>(
+      () => UpdateProfileUseCase(profileRepository: gi<ProfileRepository>()),
     );
 
     // //register cubits
