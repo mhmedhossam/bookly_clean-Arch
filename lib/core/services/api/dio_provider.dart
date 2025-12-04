@@ -22,7 +22,7 @@ class DioProvider {
     required Object? data,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
-    T Function(dynamic)? json,
+    required T Function(dynamic) json,
   }) async {
     try {
       Response response = await dio.post(
@@ -31,11 +31,14 @@ class DioProvider {
         queryParameters: queryParameters,
         options: Options(headers: headers),
       );
+
       var res = BaseResponse.fromJson(response.data);
+
       if (res.status != 200 && res.status != 201) {
         return Left(ServerFailure(res.message ?? ""));
       }
-      return Right(json!(res.data));
+
+      return Right(json(res.data));
     } on DioException catch (e) {
       return handleError(e);
     } catch (e) {
@@ -66,6 +69,7 @@ class DioProvider {
     } on DioException catch (e) {
       return handleError(e);
     } catch (e) {
+      print(e);
       return Left(ServerFailure(e.toString()));
     }
   }

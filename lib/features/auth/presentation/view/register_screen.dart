@@ -35,18 +35,18 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
-  BlocListener<Authtcubit, Authstates> _body(BuildContext context) {
+  BlocListener<Authtcubit, AuthStates> _body(BuildContext context) {
     var cubit = context.read<Authtcubit>();
 
-    return BlocListener<Authtcubit, Authstates>(
+    return BlocListener<Authtcubit, AuthStates>(
       listener: (context, state) {
-        if (state is Authloading) {
+        if (state is AuthLoading) {
           showloadingDialog(context);
         } else if (state is AuthFailure) {
           Navigation.pop(context);
 
           showMyDialog(context, state.errorMessage);
-        } else if (state is AuthSuccessed) {
+        } else if (state is AuthSucceeded) {
           Navigation.pop(context);
 
           Navigation.pushNamedTo(context, Routes.loginScreen);
@@ -56,7 +56,7 @@ class RegisterScreen extends StatelessWidget {
         child: Padding(
           padding: EdgeInsetsGeometry.all(22),
           child: Form(
-            key: cubit.formkey,
+            key: cubit.formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -108,20 +108,20 @@ class RegisterScreen extends StatelessWidget {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "please enter your Confirm password";
-                    } else if (cubit.confirmpasswordController.text !=
+                    } else if (cubit.confirmPasswordController.text !=
                         cubit.passwordController.text) {
                       return "the confirm password is not match with password";
                     }
                     return null;
                   },
                   hintText: "Confirm password",
-                  controller: cubit.confirmpasswordController,
+                  controller: cubit.confirmPasswordController,
                 ),
                 Gap(30),
 
                 MainButton(
                   onPressed: () {
-                    if (cubit.formkey.currentState!.validate()) {
+                    if (cubit.formKey.currentState!.validate()) {
                       cubit.register();
                     }
                   },

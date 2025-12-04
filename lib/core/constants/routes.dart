@@ -29,6 +29,7 @@ import 'package:bookia/features/profile/presentation/views/my_orders.dart';
 import 'package:bookia/features/profile/presentation/views/update_password.dart';
 import 'package:bookia/features/splash/splash_screen.dart';
 import 'package:bookia/features/welcome/welcome_screen.dart';
+import 'package:bookia/features/wishlist/domain/usecases/add_to_wish_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -89,6 +90,8 @@ class Routes {
         path: searchScreen,
         builder: (context, state) => BlocProvider(
           create: (context) => HomeCubit(
+            addToWishUseCase: ServiceLocator.gi<AddToWishUseCase>(),
+
             getAllProductUseCase: ServiceLocator.gi<GetAllProductUseCase>(),
             getBSellerPUseCase: ServiceLocator.gi<GetBSellerPUseCase>(),
             getSearchUseCase: ServiceLocator.gi<GetSearchUseCase>(),
@@ -105,6 +108,7 @@ class Routes {
           final source = extra["source"] as String;
           return BlocProvider(
             create: (context) => HomeCubit(
+              addToWishUseCase: ServiceLocator.gi<AddToWishUseCase>(),
               getAllProductUseCase: ServiceLocator.gi<GetAllProductUseCase>(),
               getBSellerPUseCase: ServiceLocator.gi<GetBSellerPUseCase>(),
               getSearchUseCase: ServiceLocator.gi<GetSearchUseCase>(),

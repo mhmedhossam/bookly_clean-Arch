@@ -10,7 +10,7 @@ import 'package:bookia/features/home/domain/usecases/get_b_seller_p_usecase.dart
 import 'package:bookia/features/home/domain/usecases/get_search_usecase.dart';
 import 'package:bookia/features/home/domain/usecases/get_slider_usecase.dart';
 import 'package:bookia/features/home/presentation/cubit/home_states.dart';
-import 'package:bookia/features/wishlist/data/repo/wish_repo.dart';
+import 'package:bookia/features/wishlist/domain/usecases/add_to_wish_usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,12 +25,14 @@ class HomeCubit extends Cubit<HomeStates> {
   GetSearchUseCase getSearchUseCase;
   GetBSellerPUseCase getBSellerPUseCase;
   GetAllProductUseCase getAllProductUseCase;
+  AddToWishUseCase addToWishUseCase;
   final searchController = TextEditingController();
   HomeCubit({
     required this.getAllProductUseCase,
     required this.getBSellerPUseCase,
     required this.getSearchUseCase,
     required this.getSliderUseCase,
+    required this.addToWishUseCase,
   }) : super(InitialState());
 
   getHome() async {
@@ -90,14 +92,17 @@ class HomeCubit extends Cubit<HomeStates> {
   addToWishList(int id) async {
     if (isClosed) return;
 
-    var res = await WishRepo.addToWishList(id);
+    var res = await addToWishUseCase.call(id);
     if (isClosed) return;
 
-    if (res.status != 200) {
-      emit(HomeFailure(message: res.message ?? ""));
-    } else {
-      emit(HomeSucceed(message: "product added to WishList"));
-    }
+    res.fold(
+      (l) {
+        emit(HomeFailure(message: l.errorMessage ?? ""));
+      },
+      (r) {
+        emit(HomeSucceed(message: "product added to WishList"));
+      },
+    );
   }
 
   addToCartList(int id) async {

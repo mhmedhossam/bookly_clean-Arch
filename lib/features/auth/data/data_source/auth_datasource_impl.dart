@@ -65,6 +65,7 @@ class AuthRemoteDatasourceImpl extends AuthDatasource {
       var data = await DioProvider.post<AuthResponse>(
         AuthEndpoints.otpVerify,
         data: authDataRequest.toJson(),
+        json: (json) => AuthResponse.fromJson(json),
       );
       return data;
     } catch (e) {
@@ -80,6 +81,7 @@ class AuthRemoteDatasourceImpl extends AuthDatasource {
       var data = await DioProvider.post<AuthResponse>(
         AuthEndpoints.setNewPassword,
         data: authDataRequest.toJson(),
+        json: (json) => AuthResponse.fromJson(json),
       );
       return data;
     } catch (e) {

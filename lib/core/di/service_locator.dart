@@ -19,6 +19,14 @@ import 'package:bookia/features/home/domain/usecases/get_all_product_usecase.dar
 import 'package:bookia/features/home/domain/usecases/get_b_seller_p_usecase.dart';
 import 'package:bookia/features/home/domain/usecases/get_search_usecase.dart';
 import 'package:bookia/features/home/domain/usecases/get_slider_usecase.dart';
+import 'package:bookia/features/wishlist/data/repo/wish_repository_impl.dart';
+import 'package:bookia/features/wishlist/data/wishlist_data_source/wishlist_data_source_impl.dart';
+import 'package:bookia/features/wishlist/data/wishlist_data_source/wishlist_datasource.dart';
+import 'package:bookia/features/wishlist/domain/entities/response/wish_list_response.dart';
+import 'package:bookia/features/wishlist/domain/repo/wishlist_repository.dart';
+import 'package:bookia/features/wishlist/domain/usecases/add_to_wish_usecase.dart';
+import 'package:bookia/features/wishlist/domain/usecases/get_wish_usecase.dart';
+import 'package:bookia/features/wishlist/domain/usecases/remove_from_wish_usecase.dart';
 import 'package:get_it/get_it.dart';
 
 class ServiceLocator {
@@ -35,6 +43,9 @@ class ServiceLocator {
     //  register data source
     gi.registerLazySingleton<AuthDatasource>(() => AuthRemoteDatasourceImpl());
     gi.registerLazySingleton<HomeDatasource>(() => HomeDatasourceImpl());
+    gi.registerLazySingleton<WishlistDatasource>(
+      () => WishlistDataSourceImpl(),
+    );
     // register reposiatories
 
     gi.registerLazySingleton<AuthRepository>(
@@ -42,6 +53,9 @@ class ServiceLocator {
     );
     gi.registerLazySingleton<HomeRepository>(
       () => HomeRepositoryImpl(homeDatasource: gi<HomeDatasource>()),
+    );
+    gi.registerLazySingleton<WishlistRepository>(
+      () => WishRepositoryImpl(wishlistDatasource: gi<WishlistDatasource>()),
     );
     //register usecases
     //Auth
@@ -76,6 +90,18 @@ class ServiceLocator {
       () => GetSliderUseCase(homeRepository: gi<HomeRepository>()),
     );
     //  ------------------------------
+
+    //wish
+
+    gi.registerLazySingleton<AddToWishUseCase>(
+      () => AddToWishUseCase(wishlistRepository: gi<WishlistRepository>()),
+    );
+    gi.registerLazySingleton<RemoveFromWishUseCase>(
+      () => RemoveFromWishUseCase(wishlistRepository: gi<WishlistRepository>()),
+    );
+    gi.registerLazySingleton<GetWishUseCase>(
+      () => GetWishUseCase(wishlistRepository: gi<WishlistRepository>()),
+    );
 
     // //register cubits
 
