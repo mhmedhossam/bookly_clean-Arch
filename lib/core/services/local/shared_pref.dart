@@ -15,6 +15,7 @@ class SharedPref {
     prefs = await SharedPreferences.getInstance();
   }
 
+  SharedPref get instance => this;
   //set token
   static setToken(String? token) {
     if (token == null) return;
@@ -27,11 +28,11 @@ class SharedPref {
   }
 
   // set userdata after convert object ==> json == string
-  static setusercache(AuthUSer? user) {
+  static setUserCache(AuthUSer? user) {
     if (user == null) return;
-    var obtoJson = user.toJson();
+    var obToJson = user.toJson();
 
-    String userString = jsonEncode(obtoJson);
+    String userString = jsonEncode(obToJson);
     setData(kUserData, userString);
   }
 

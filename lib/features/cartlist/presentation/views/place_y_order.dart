@@ -6,7 +6,7 @@ import 'package:bookia/core/widgets/custom_back_button.dart';
 import 'package:bookia/core/widgets/custom_text_field.dart';
 import 'package:bookia/core/widgets/dialog.dart';
 import 'package:bookia/core/widgets/main_button.dart';
-import 'package:bookia/features/cartlist/data/models/response/card_list_response/user.dart';
+import 'package:bookia/features/cartlist/domain/entities/response/card_list_response/user.dart';
 import 'package:bookia/features/cartlist/presentation/cubit/card_cubit.dart';
 import 'package:bookia/features/cartlist/presentation/cubit/card_states.dart';
 import 'package:bookia/core/helper/governmentmodel.dart';

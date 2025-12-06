@@ -1,6 +1,6 @@
 import 'package:bookia/core/services/api/dio_provider.dart';
 import 'package:bookia/core/services/api/failure.dart';
-import 'package:bookia/features/cartlist/data/repo/cardlist_repo.dart';
+import 'package:bookia/features/cartlist/domain/usecases/add_to_cart_use_case.dart';
 import 'package:bookia/features/home/domain/entities/all_products_model/product_model.dart';
 import 'package:bookia/features/home/domain/entities/all_products_model/product.dart';
 import 'package:bookia/features/home/domain/entities/slider_model/home_slider_model.dart';
@@ -20,7 +20,7 @@ class HomeCubit extends Cubit<HomeStates> {
   List<Product> bestProducts = [];
   List<Product> products = [];
   List<Product> searchProduct = [];
-
+  AddToCartUseCase addToCartUseCase;
   GetSliderUseCase getSliderUseCase;
   GetSearchUseCase getSearchUseCase;
   GetBSellerPUseCase getBSellerPUseCase;
@@ -33,6 +33,7 @@ class HomeCubit extends Cubit<HomeStates> {
     required this.getSearchUseCase,
     required this.getSliderUseCase,
     required this.addToWishUseCase,
+    required this.addToCartUseCase,
   }) : super(InitialState());
 
   getHome() async {
@@ -108,13 +109,16 @@ class HomeCubit extends Cubit<HomeStates> {
   addToCartList(int id) async {
     if (isClosed) return;
 
-    var res = await CardlistRepo.addToCart(id);
+    var res = await addToCartUseCase.call(id);
     if (isClosed) return;
 
-    if (res.status != 201) {
-      emit(HomeFailure(message: res.message ?? ""));
-    } else {
-      emit(HomeSucceed(message: "product added to Cart successfully"));
-    }
+    res.fold(
+      (l) {
+        emit(HomeFailure(message: l.errorMessage ?? ""));
+      },
+      (r) {
+        emit(HomeSucceed(message: "product added to Cart"));
+      },
+    );
   }
 }

@@ -1,6 +1,12 @@
 import 'package:bookia/core/constants/app_images.dart';
 import 'package:bookia/core/di/service_locator.dart';
 import 'package:bookia/core/utils/app_colors.dart';
+import 'package:bookia/features/cartlist/domain/usecases/add_to_cart_use_case.dart';
+import 'package:bookia/features/cartlist/domain/usecases/check_out_repo_use_case.dart';
+import 'package:bookia/features/cartlist/domain/usecases/get_cart_list_use_case.dart';
+import 'package:bookia/features/cartlist/domain/usecases/remove_from_cart.dart';
+import 'package:bookia/features/cartlist/domain/usecases/submit_order_usecase.dart';
+import 'package:bookia/features/cartlist/domain/usecases/update_item_cart_use_case.dart';
 import 'package:bookia/features/cartlist/presentation/cubit/card_cubit.dart';
 import 'package:bookia/features/cartlist/presentation/views/cardlist_view.dart';
 import 'package:bookia/features/home/domain/usecases/get_all_product_usecase.dart';
@@ -54,6 +60,7 @@ class _MainAppScreenState extends State<MainAppScreen> {
           getBSellerPUseCase: ServiceLocator.gi<GetBSellerPUseCase>(),
           getSearchUseCase: ServiceLocator.gi<GetSearchUseCase>(),
           getSliderUseCase: ServiceLocator.gi<GetSliderUseCase>(),
+          addToCartUseCase: ServiceLocator.gi<AddToCartUseCase>(),
         )..getHome(),
         child: HomeScreen(),
       ),
@@ -66,7 +73,15 @@ class _MainAppScreenState extends State<MainAppScreen> {
         child: WishlistView(),
       ),
       BlocProvider(
-        create: (context) => CartCubit()..getCart(),
+        create: (context) => CartCubit(
+          addToCartUseCase: ServiceLocator.gi<AddToCartUseCase>(),
+
+          checkOutUseCase: ServiceLocator.gi<CheckOutUseCase>(),
+          getCartListUseCase: ServiceLocator.gi<GetCartListUseCase>(),
+          removeFromCart: ServiceLocator.gi<RemoveFromCart>(),
+          submitOrderUseCase: ServiceLocator.gi<SubmitOrderUseCase>(),
+          updateItemCartUseCase: ServiceLocator.gi<UpdateItemCartUseCase>(),
+        )..getCart(),
         child: CardlistView(),
       ),
       BlocProvider(

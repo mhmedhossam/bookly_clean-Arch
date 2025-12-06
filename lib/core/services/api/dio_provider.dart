@@ -17,6 +17,7 @@ class DioProvider {
     dio = Dio(BaseOptions(baseUrl: MainEndpoints.baseUrl));
   }
 
+  DioProvider get instance => this;
   static Future<Either<Failure, T>> post<T>(
     endpoint, {
     required Object? data,
@@ -25,7 +26,7 @@ class DioProvider {
     required T Function(dynamic) json,
   }) async {
     try {
-      Response response = await dio.post(
+      Response response = await dio.post<T>(
         endpoint,
         data: data,
         queryParameters: queryParameters,
@@ -60,11 +61,14 @@ class DioProvider {
         queryParameters: queryParameters,
         options: Options(headers: headers),
       );
-      var res = BaseResponse.fromJson(response.data);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (res.data is Map<String, dynamic> || res.data is List<dynamic>) {
+        if (response.data is Map<String, dynamic>) {
+          var res = BaseResponse.fromJson(response.data);
+
           return Right(fromJson!(res.data));
+        } else {
+          return Left(ServerFailure("error "));
         }
       }
 

@@ -1,19 +1,30 @@
 import 'dart:developer';
 
 import 'package:bookia/core/services/local/shared_pref.dart';
-import 'package:bookia/features/auth/data/models/response/auth_response/user.dart';
-import 'package:bookia/features/cartlist/data/models/response/card_list_response/card_list_response.dart';
-import 'package:bookia/features/cartlist/data/models/response/card_list_response/cart_item.dart';
-import 'package:bookia/features/cartlist/data/models/response/card_list_response/user.dart';
-import 'package:bookia/features/cartlist/data/repo/cardlist_repo.dart';
+import 'package:bookia/features/auth/domain/entities/response/auth_response/user.dart';
+import 'package:bookia/features/cartlist/domain/entities/response/card_list_response/card_list_response.dart';
+import 'package:bookia/features/cartlist/domain/entities/response/card_list_response/cart_item.dart';
+import 'package:bookia/features/cartlist/domain/entities/response/card_list_response/data.dart';
+import 'package:bookia/features/cartlist/domain/entities/response/card_list_response/user.dart';
+import 'package:bookia/features/cartlist/domain/usecases/add_to_cart_use_case.dart';
+import 'package:bookia/features/cartlist/domain/usecases/check_out_repo_use_case.dart';
+import 'package:bookia/features/cartlist/domain/usecases/get_cart_list_use_case.dart';
+import 'package:bookia/features/cartlist/domain/usecases/remove_from_cart.dart';
+import 'package:bookia/features/cartlist/domain/usecases/submit_order_usecase.dart';
+import 'package:bookia/features/cartlist/domain/usecases/update_item_cart_use_case.dart';
 import 'package:bookia/features/cartlist/presentation/cubit/card_states.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CartCubit extends Cubit<CartStates> {
-  CardListResponse? cardListResponse;
   List<CartItem> cartItem = [];
-
+  AddToCartUseCase addToCartUseCase;
+  CartModel? cartModel;
+  CheckOutUseCase checkOutUseCase;
+  GetCartListUseCase getCartListUseCase;
+  RemoveFromCart removeFromCart;
+  SubmitOrderUseCase submitOrderUseCase;
+  UpdateItemCartUseCase updateItemCartUseCase;
   var name = TextEditingController();
   var email = TextEditingController();
   var address = TextEditingController();
@@ -21,81 +32,90 @@ class CartCubit extends Cubit<CartStates> {
   var formkey = GlobalKey<FormState>();
   var governorate = TextEditingController();
   int? governorateId;
-  CartCubit() : super(CartInitialState());
+  CartCubit({
+    required this.addToCartUseCase,
+    required this.checkOutUseCase,
+    required this.getCartListUseCase,
+    required this.removeFromCart,
+    required this.submitOrderUseCase,
+    required this.updateItemCartUseCase,
+  }) : super(CartInitialState());
 
   getCart() async {
     emit(CartLoadingState());
 
-    var res = await CardlistRepo.getCartList();
+    var res = await getCartListUseCase.call();
     if (isClosed) return;
-
-    if (res.status != 200) {
-      emit(CartFailureState(message: res.message));
-    } else {
-      cardListResponse = res;
-      cartItem = res.data?.cartItems ?? [];
-      emit(CartSucceedState());
-    }
+    res.fold(
+      (l) {
+        emit(CartFailureState(message: l.errorMessage));
+      },
+      (r) {
+        emit(CartSucceedState());
+      },
+    );
   }
 
   removeCart(int id) async {
     if (isClosed) return;
 
-    var res = await CardlistRepo.removeFromCart(id);
-    if (res.status != 200) {
-      emit(CartFailureState(message: res.message));
-    } else {
-      cardListResponse = res;
-      cartItem = res.data?.cartItems ?? [];
-
-      emit(CartSucceedState());
-    }
+    var res = await removeFromCart.call(id);
+    res.fold(
+      (l) {
+        emit(CartFailureState(message: l.errorMessage));
+      },
+      (r) {
+        emit(CartSucceedState());
+      },
+    );
   }
 
   updateCart({required int id, required int quantity}) async {
     if (isClosed) return;
 
-    var res = await CardlistRepo.updateItemCart(id: id, quantity: quantity);
+    var res = await updateItemCartUseCase.call(id: id, quantity: quantity);
     if (isClosed) return;
 
-    if (res.status != 201) {
-      emit(CartFailureState(message: res.message));
-    } else {
-      cardListResponse = res;
-      cartItem = res.data?.cartItems ?? [];
-      emit(CartSucceedState());
-    }
+    res.fold(
+      (l) {
+        emit(CartFailureState(message: l.errorMessage));
+      },
+      (r) {
+        emit(CartSucceedState());
+      },
+    );
   }
 
   checkOut() async {
     emit(CheckoutLoadingState());
 
-    var res = await CardlistRepo.checkOutRepo();
+    var res = await checkOutUseCase.call();
     if (isClosed) return;
 
-    if (res.status != 200) {
-      emit(CheckoutFailureState(message: res.message));
-    } else {
-      emit(CheckoutSucceedState());
-    }
+    res.fold(
+      (l) {
+        emit(CartFailureState(message: l.errorMessage));
+      },
+      (r) {
+        emit(CartSucceedState());
+      },
+    );
   }
 
   submitOrder(User user) async {
-    try {
-      if (isClosed) return;
-      emit(PlaceOrderLoadingState());
-      var res = await CardlistRepo.submitOrder(user);
-      if (isClosed) return;
+    if (isClosed) return;
+    emit(PlaceOrderLoadingState());
+    var res = await submitOrderUseCase.call(user);
+    if (isClosed) return;
 
-      if (res.status != 201) {
-        emit(PlaceOrderFailureState(message: res.message));
-      } else {
-        emit(PlaceOrderSucceedState());
-      }
-    } on Exception catch (e) {
-      log(e.toString());
-      throw (e.toString());
-    }
+    res.fold(
+      (l) {
+        emit(CartFailureState(message: l.errorMessage));
+      },
+      (r) {
+        emit(CartSucceedState());
+      },
+    );
   }
 
   reFillDataUser() {

@@ -1,4 +1,4 @@
-class CardlistEndpoint {
+class CartListEndpoint {
   static const String getCardList = "cart";
   static const String addToCard = "add-to-cart";
   static const String updateToCard = "update-cart";

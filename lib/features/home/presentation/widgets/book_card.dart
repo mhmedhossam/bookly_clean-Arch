@@ -3,7 +3,7 @@ import 'package:bookia/core/constants/routes.dart';
 import 'package:bookia/core/utils/app_colors.dart';
 import 'package:bookia/core/utils/text_styles.dart';
 import 'package:bookia/core/widgets/main_button.dart';
-import 'package:bookia/features/home/data/models/response/all_product_model/all_product_model/product.dart';
+import 'package:bookia/features/home/domain/entities/all_products_model/product.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 

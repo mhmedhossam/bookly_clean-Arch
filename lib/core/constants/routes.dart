@@ -11,6 +11,13 @@ import 'package:bookia/features/auth/presentation/view/login_screen.dart';
 import 'package:bookia/features/auth/presentation/view/otp_verify.dart';
 import 'package:bookia/features/auth/presentation/view/pass_changed.dart';
 import 'package:bookia/features/auth/presentation/view/register_screen.dart';
+import 'package:bookia/features/cartlist/domain/usecases/add_to_cart_use_case.dart';
+import 'package:bookia/features/cartlist/domain/usecases/check_out_repo_use_case.dart';
+import 'package:bookia/features/cartlist/domain/usecases/get_cart_list_use_case.dart'
+    show GetCartListUseCase;
+import 'package:bookia/features/cartlist/domain/usecases/remove_from_cart.dart';
+import 'package:bookia/features/cartlist/domain/usecases/submit_order_usecase.dart';
+import 'package:bookia/features/cartlist/domain/usecases/update_item_cart_use_case.dart';
 import 'package:bookia/features/cartlist/presentation/cubit/card_cubit.dart';
 import 'package:bookia/features/cartlist/presentation/views/place_y_order.dart';
 import 'package:bookia/features/cartlist/presentation/views/success_view.dart';
@@ -92,7 +99,15 @@ class Routes {
         path: placeYOrder,
         builder: (context, state) {
           return BlocProvider(
-            create: (context) => CartCubit()..reFillDataUser(),
+            create: (context) => CartCubit(
+              addToCartUseCase: ServiceLocator.gi<AddToCartUseCase>(),
+
+              checkOutUseCase: ServiceLocator.gi<CheckOutUseCase>(),
+              getCartListUseCase: ServiceLocator.gi<GetCartListUseCase>(),
+              removeFromCart: ServiceLocator.gi<RemoveFromCart>(),
+              submitOrderUseCase: ServiceLocator.gi<SubmitOrderUseCase>(),
+              updateItemCartUseCase: ServiceLocator.gi<UpdateItemCartUseCase>(),
+            )..reFillDataUser(),
             child: PlaceYOrder(total: state.extra),
           );
         },
@@ -102,6 +117,7 @@ class Routes {
         builder: (context, state) => BlocProvider(
           create: (context) => HomeCubit(
             addToWishUseCase: ServiceLocator.gi<AddToWishUseCase>(),
+            addToCartUseCase: ServiceLocator.gi<AddToCartUseCase>(),
 
             getAllProductUseCase: ServiceLocator.gi<GetAllProductUseCase>(),
             getBSellerPUseCase: ServiceLocator.gi<GetBSellerPUseCase>(),
@@ -119,6 +135,8 @@ class Routes {
           final source = extra["source"] as String;
           return BlocProvider(
             create: (context) => HomeCubit(
+              addToCartUseCase: ServiceLocator.gi<AddToCartUseCase>(),
+
               addToWishUseCase: ServiceLocator.gi<AddToWishUseCase>(),
               getAllProductUseCase: ServiceLocator.gi<GetAllProductUseCase>(),
               getBSellerPUseCase: ServiceLocator.gi<GetBSellerPUseCase>(),

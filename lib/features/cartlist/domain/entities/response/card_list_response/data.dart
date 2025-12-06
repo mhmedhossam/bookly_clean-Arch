@@ -1,15 +1,15 @@
 import 'cart_item.dart';
 import 'user.dart';
 
-class Data {
+class CartModel {
   int? id;
   User? user;
   dynamic total;
   List<CartItem>? cartItems;
 
-  Data({this.id, this.user, this.total, this.cartItems});
+  CartModel({this.id, this.user, this.total, this.cartItems});
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory CartModel.fromJson(Map<String, dynamic> json) => CartModel(
     id: json['id'] as int?,
     user: json['user'] == null
         ? null

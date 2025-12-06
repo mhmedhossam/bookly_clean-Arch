@@ -6,7 +6,7 @@ import 'package:bookia/core/utils/app_colors.dart';
 import 'package:bookia/core/utils/text_styles.dart';
 import 'package:bookia/core/widgets/dialog.dart';
 import 'package:bookia/core/widgets/main_button.dart';
-import 'package:bookia/features/auth/data/models/response/auth_response/user.dart';
+import 'package:bookia/features/auth/domain/entities/response/auth_response/user.dart';
 import 'package:bookia/features/cartlist/presentation/cubit/card_cubit.dart';
 import 'package:bookia/features/cartlist/presentation/cubit/card_states.dart';
 import 'package:bookia/features/cartlist/presentation/widgets/cart_card.dart';
@@ -36,13 +36,11 @@ class CardListBuilder extends StatelessWidget {
 
           showMyDialog(context, state.message ?? "error", Dialogtype.error);
         } else if (state is CheckoutSucceedState) {
-          print("hosososos${cubit.cardListResponse?.data?.total}");
-
           Navigation.pop(context);
           Navigation.pushNamedTo(
             context,
             Routes.placeYOrder,
-            cubit.cardListResponse?.data?.total,
+            cubit.cartModel?.total,
           );
         }
       },
@@ -98,18 +96,16 @@ class CardListBuilder extends StatelessWidget {
                           children: [
                             Text("Total", style: TextStyles.textStyle18),
 
-                            cubit.cardListResponse?.data?.total is double
+                            cubit.cartModel?.total is double
                                 ? Text(
-                                    (cubit.cardListResponse?.data?.total
-                                            as double)
+                                    (cubit.cartModel?.total as double)
                                         .toStringAsFixed(2),
 
                                     style: TextStyles.textStyle18,
                                   )
                                 : Text(
                                     double.parse(
-                                      cubit.cardListResponse?.data?.total
-                                          as String,
+                                      cubit.cartModel?.total as String,
                                     ).toStringAsFixed(2),
                                   ),
                           ],
