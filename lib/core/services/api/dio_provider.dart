@@ -41,9 +41,14 @@ class DioProvider {
         return Left(ServerFailure("error the json data return [] not map"));
       }
     } on DioException catch (e) {
-      var badRes = BaseResponse.fromJson(
-        e.response?.data is Map<String, dynamic> ? e.response?.data : {},
-      );
+      var res = e.response?.data;
+      BaseResponse badRes;
+      if (res is Map<String, dynamic>) {
+        badRes = BaseResponse.fromJson(res);
+      } else {
+        badRes = BaseResponse(message: e.message);
+      }
+
       return handleError(e, badRes);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
@@ -72,9 +77,14 @@ class DioProvider {
         return Left(ServerFailure("error the json data return [] not map"));
       }
     } on DioException catch (e) {
-      var badRes = BaseResponse.fromJson(
-        e.response?.data is Map<String, dynamic> ? e.response?.data : {},
-      );
+      var res = e.response?.data;
+      BaseResponse badRes;
+      if (res is Map<String, dynamic>) {
+        badRes = BaseResponse.fromJson(res);
+      } else {
+        badRes = BaseResponse(message: e.message);
+      }
+
       return handleError(e, badRes);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
@@ -97,10 +107,17 @@ class DioProvider {
       );
       return Right(json(response.data));
     } on DioException catch (e) {
-      var badRes = BaseResponse.fromJson(
-        e.response?.data is Map<String, dynamic> ? e.response?.data : {},
-      );
+      var res = e.response?.data;
+      BaseResponse badRes;
+      if (res is Map<String, dynamic>) {
+        badRes = BaseResponse.fromJson(res);
+      } else {
+        badRes = BaseResponse(message: e.message);
+      }
+
       return handleError(e, badRes);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 
@@ -120,10 +137,17 @@ class DioProvider {
       );
       return Right(json(response.data));
     } on DioException catch (e) {
-      var badRes = BaseResponse.fromJson(
-        e.response?.data is Map<String, dynamic> ? e.response?.data : {},
-      );
+      var res = e.response?.data;
+      BaseResponse badRes;
+      if (res is Map<String, dynamic>) {
+        badRes = BaseResponse.fromJson(res);
+      } else {
+        badRes = BaseResponse(message: e.message);
+      }
+
       return handleError(e, badRes);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 }

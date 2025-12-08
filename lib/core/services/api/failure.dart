@@ -23,12 +23,22 @@ class CacheFailure extends Failure {
 Left<Failure, T> handleError<T>(DioException e, BaseResponse baseResponse) {
   switch (e.type) {
     case DioExceptionType.badResponse:
-      return Left(ServerFailure(baseResponse.message ?? ""));
+      return Left(
+        ServerFailure(
+          baseResponse.message ?? "something error please try again",
+        ),
+      );
 
     case DioExceptionType.connectionTimeout:
       return Left(ServerFailure(e.message ?? ""));
 
     case DioExceptionType.receiveTimeout:
+      return Left(ServerFailure(e.message ?? ""));
+
+    case DioExceptionType.connectionError:
+      return Left(ServerFailure(e.message ?? ""));
+
+    case DioExceptionType.sendTimeout:
       return Left(ServerFailure(e.message ?? ""));
 
     default:
