@@ -33,15 +33,18 @@ class DioProvider {
         options: Options(headers: headers),
       );
 
-      var res = BaseResponse.fromJson(response.data);
+      if (response.data is Map<String, dynamic>) {
+        var res = BaseResponse.fromJson(response.data);
 
-      if (res.status != 200 && res.status != 201) {
-        return Left(ServerFailure(res.message ?? ""));
+        return Right(json(res.data));
+      } else {
+        return Left(ServerFailure("error the json data return [] not map"));
       }
-
-      return Right(json(res.data));
     } on DioException catch (e) {
-      return handleError(e);
+      var badRes = BaseResponse.fromJson(
+        e.response?.data is Map<String, dynamic> ? e.response?.data : {},
+      );
+      return handleError(e, badRes);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
@@ -52,7 +55,7 @@ class DioProvider {
     Object? data,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
-    T Function(dynamic)? fromJson,
+    required T Function(dynamic) fromJson,
   }) async {
     try {
       Response response = await dio.get(
@@ -61,30 +64,29 @@ class DioProvider {
         queryParameters: queryParameters,
         options: Options(headers: headers),
       );
+      if (response.data is Map<String, dynamic>) {
+        var res = BaseResponse.fromJson(response.data);
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        if (response.data is Map<String, dynamic>) {
-          var res = BaseResponse.fromJson(response.data);
-
-          return Right(fromJson!(res.data));
-        } else {
-          return Left(ServerFailure("error "));
-        }
+        return Right(fromJson(res.data));
+      } else {
+        return Left(ServerFailure("error the json data return [] not map"));
       }
-
-      return Right(fromJson!({}));
     } on DioException catch (e) {
-      return handleError(e);
+      var badRes = BaseResponse.fromJson(
+        e.response?.data is Map<String, dynamic> ? e.response?.data : {},
+      );
+      return handleError(e, badRes);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
 
-  static Future<Map<String, dynamic>> patch(
+  static Future<Either<Failure, T>> patch<T>(
     endpoint, {
     required Object? data,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
+    required T Function(dynamic) json,
   }) async {
     try {
       Response response = await dio.patch(
@@ -93,25 +95,21 @@ class DioProvider {
         queryParameters: queryParameters,
         options: Options(headers: headers),
       );
-      return response.data;
+      return Right(json(response.data));
     } on DioException catch (e) {
-      if (e.response != null && e.response?.data is Map<String, dynamic>) {
-        return e.response!.data;
-      }
-      return {
-        "status": e.response?.statusCode ?? 500,
-        "message": "Network error, please try again later",
-        "data": [],
-        "error": [],
-      };
+      var badRes = BaseResponse.fromJson(
+        e.response?.data is Map<String, dynamic> ? e.response?.data : {},
+      );
+      return handleError(e, badRes);
     }
   }
 
-  static Future<Map<String, dynamic>> delete(
+  static Future<Either<Failure, T>> delete<T>(
     endpoint, {
     required Object? data,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
+    required T Function(dynamic) json,
   }) async {
     try {
       Response response = await dio.delete(
@@ -120,17 +118,12 @@ class DioProvider {
         queryParameters: queryParameters,
         options: Options(headers: headers),
       );
-      return response.data;
+      return Right(json(response.data));
     } on DioException catch (e) {
-      if (e.response != null && e.response?.data is Map<String, dynamic>) {
-        return e.response!.data;
-      }
-      return {
-        "status": e.response?.statusCode ?? 500,
-        "message": "Network error, please try again later",
-        "data": [],
-        "error": [],
-      };
+      var badRes = BaseResponse.fromJson(
+        e.response?.data is Map<String, dynamic> ? e.response?.data : {},
+      );
+      return handleError(e, badRes);
     }
   }
 }

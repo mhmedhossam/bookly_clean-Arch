@@ -1,4 +1,3 @@
-import 'package:bookia/core/services/api/base_response.dart';
 import 'package:bookia/core/services/api/dio_provider.dart';
 import 'package:bookia/core/services/api/failure.dart';
 import 'package:bookia/features/auth/data/data_source/auth_datasource.dart';

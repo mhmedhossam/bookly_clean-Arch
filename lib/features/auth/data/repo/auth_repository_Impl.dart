@@ -8,47 +8,46 @@ import 'package:dartz/dartz.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
   AuthDatasource authDatasource;
-  // late bool isConnected;
   AuthRepositoryImpl({required this.authDatasource});
 
   @override
   Future<Either<Failure, AuthResponse>> login(
-    AuthDataRequest authDataRequesr,
+    AuthDataRequest authDataRequest,
   ) async {
     return await isConnection<AuthResponse>(
-      authDatasource.login(authDataRequesr),
+      authDatasource.login(authDataRequest),
     );
   }
 
   @override
   Future<Either<Failure, AuthResponse>> register(
-    AuthDataRequest authDataRequesr,
+    AuthDataRequest authDataRequest,
   ) async {
     return await isConnection<AuthResponse>(
-      authDatasource.register(authDataRequesr),
+      authDatasource.register(authDataRequest),
     );
   }
 
   @override
   Future<Either<Failure, AuthResponse>> forgetPassword(
-    AuthDataRequest authDataRequesr,
+    AuthDataRequest authDataRequest,
   ) async {
     return await isConnection<AuthResponse>(
-      authDatasource.forgetPassword(authDataRequesr),
+      authDatasource.forgetPassword(authDataRequest),
     );
   }
 
   @override
   Future<Either<Failure, AuthResponse>> otpVerifyy(
-    AuthDataRequest authDataRequesr,
+    AuthDataRequest authDataRequest,
   ) async {
-    return await isConnection(authDatasource.otpVerifyy(authDataRequesr));
+    return await isConnection(authDatasource.otpVerifyy(authDataRequest));
   }
 
   @override
   Future<Either<Failure, AuthResponse>> setNewPassword(
-    AuthDataRequest authDataRequesr,
+    AuthDataRequest authDataRequest,
   ) async {
-    return await isConnection(authDatasource.setNewPassword(authDataRequesr));
+    return await isConnection(authDatasource.setNewPassword(authDataRequest));
   }
 }

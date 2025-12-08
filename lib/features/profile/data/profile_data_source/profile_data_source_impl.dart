@@ -17,7 +17,6 @@ class ProfileDataSourceImpl extends ProfileDataSource {
         headers: {"authorization": "Bearer ${SharedPref.getToken()}"},
         fromJson: (json) {
           if (json is List<dynamic>) {
-            print(SharedPref.getToken());
             return OrderHistoryResponse.fromJson(
               {"orders": []},
             ); // because when orders empty the api return list , not empty return map

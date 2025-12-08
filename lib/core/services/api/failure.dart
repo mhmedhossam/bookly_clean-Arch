@@ -1,3 +1,4 @@
+import 'package:bookia/core/services/api/base_response.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
@@ -19,10 +20,10 @@ class CacheFailure extends Failure {
   CacheFailure(super.errorMessage);
 }
 
-Left<Failure, T> handleError<T>(DioException e) {
+Left<Failure, T> handleError<T>(DioException e, BaseResponse baseResponse) {
   switch (e.type) {
     case DioExceptionType.badResponse:
-      return Left(ServerFailure(e.response?.statusMessage ?? ""));
+      return Left(ServerFailure(baseResponse.message ?? ""));
 
     case DioExceptionType.connectionTimeout:
       return Left(ServerFailure(e.message ?? ""));

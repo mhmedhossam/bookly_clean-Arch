@@ -51,7 +51,7 @@ class ServiceLocator {
 
     await DioProvider().init();
     await SharedPref().init();
-    // gi.registerSingleton(() => SharedPref.instance);
+    gi.registerSingleton<SharedPref>(SharedPref().instance);
     // gi.registerSingleton(() => DioProvider.instance);
     gi.registerSingleton<SharedPref>(SharedPref().instance);
     gi.registerSingleton<DioProvider>(DioProvider().instance);
