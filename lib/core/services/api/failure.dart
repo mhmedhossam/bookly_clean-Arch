@@ -29,17 +29,9 @@ Left<Failure, T> handleError<T>(DioException e, BaseResponse baseResponse) {
       return Left(serverError);
 
     case DioExceptionType.connectionTimeout:
-    // return Left(serverError);
-
     case DioExceptionType.receiveTimeout:
-    // return Left(serverError);
-
     case DioExceptionType.connectionError:
-    // return Left(serverError);
-
     case DioExceptionType.sendTimeout:
-    // return Left(serverError);
-
     default:
       return Left(serverError);
   }
