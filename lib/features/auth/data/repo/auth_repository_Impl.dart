@@ -1,5 +1,6 @@
 import 'package:bookia/core/helper/checkInternet.dart';
 import 'package:bookia/core/services/api/failure.dart';
+import 'package:bookia/core/services/local/shared_pref.dart';
 import 'package:bookia/features/auth/data/data_source/auth_datasource.dart';
 import 'package:bookia/features/auth/domain/entities/request/auth_data.dart';
 import 'package:bookia/features/auth/domain/entities/response/auth_response/data.dart';
@@ -14,8 +15,18 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<Either<Failure, AuthResponse>> login(
     AuthDataRequest authDataRequest,
   ) async {
-    return await isConnection<AuthResponse>(
+    var res = await isConnection<AuthResponse>(
       authDatasource.login(authDataRequest),
+    );
+    return res.fold(
+      (l) {
+        return res;
+      },
+      (r) {
+        SharedPref.setToken(r.token);
+        SharedPref.setUserCache(r.user);
+        return res;
+      },
     );
   }
 
