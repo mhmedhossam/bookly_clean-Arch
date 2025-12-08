@@ -17,7 +17,7 @@ class DioProvider {
     dio = Dio(BaseOptions(baseUrl: MainEndpoints.baseUrl));
   }
 
-  DioProvider get instance => this;
+  static DioProvider get instance => DioProvider();
 
   static Future<Either<Failure, T>> post<T>(
     endpoint, {

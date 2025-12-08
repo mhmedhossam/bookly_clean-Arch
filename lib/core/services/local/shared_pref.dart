@@ -15,7 +15,7 @@ class SharedPref {
     prefs = await SharedPreferences.getInstance();
   }
 
-  SharedPref get instance => this;
+  static SharedPref get instance => SharedPref();
   //set token
   static setToken(String? token) {
     if (token == null) return;

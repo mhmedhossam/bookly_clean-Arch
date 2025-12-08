@@ -51,10 +51,9 @@ class ServiceLocator {
 
     await DioProvider().init();
     await SharedPref().init();
-    gi.registerSingleton<SharedPref>(SharedPref().instance);
-    // gi.registerSingleton(() => DioProvider.instance);
-    gi.registerSingleton<SharedPref>(SharedPref().instance);
-    gi.registerSingleton<DioProvider>(DioProvider().instance);
+    // if you need object of sharedPref and DioProvider
+    // gi.registerSingleton<SharedPref>(SharedPref.instance);
+    // gi.registerSingleton<DioProvider>(DioProvider.instance);
 
     //  register data source
     gi.registerLazySingleton<AuthDatasource>(() => AuthRemoteDatasourceImpl());
