@@ -20,19 +20,19 @@ class CacheFailure extends Failure {
   CacheFailure(super.errorMessage);
 }
 
-Left<Failure, T> handleError<T>(DioException e, BaseResponse baseResponse) {
+String handleError<T>(DioException e, BaseResponse baseResponse) {
   var serverError = ServerFailure(
     baseResponse.message ?? "something error please try again",
   );
   switch (e.type) {
     case DioExceptionType.badResponse:
-      return Left(serverError);
+      return serverError.errorMessage;
 
     case DioExceptionType.connectionTimeout:
     case DioExceptionType.receiveTimeout:
     case DioExceptionType.connectionError:
     case DioExceptionType.sendTimeout:
     default:
-      return Left(serverError);
+      return serverError.errorMessage;
   }
 }

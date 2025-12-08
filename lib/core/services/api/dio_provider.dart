@@ -18,6 +18,7 @@ class DioProvider {
   }
 
   DioProvider get instance => this;
+
   static Future<Either<Failure, T>> post<T>(
     endpoint, {
     required Object? data,
@@ -32,10 +33,8 @@ class DioProvider {
         queryParameters: queryParameters,
         options: Options(headers: headers),
       );
-
       if (response.data is Map<String, dynamic>) {
         var res = BaseResponse.fromJson(response.data);
-
         return Right(json(res.data));
       } else {
         return Left(ServerFailure("error the json data return [] not map"));
@@ -48,8 +47,7 @@ class DioProvider {
       } else {
         badRes = BaseResponse(message: e.message);
       }
-
-      return handleError(e, badRes);
+      return Left(ServerFailure(handleError(e, badRes)));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
@@ -85,7 +83,7 @@ class DioProvider {
         badRes = BaseResponse(message: e.message);
       }
 
-      return handleError(e, badRes);
+      return Left(ServerFailure(handleError(e, badRes)));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
@@ -115,7 +113,7 @@ class DioProvider {
         badRes = BaseResponse(message: e.message);
       }
 
-      return handleError(e, badRes);
+      return Left(ServerFailure(handleError(e, badRes)));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
@@ -145,7 +143,7 @@ class DioProvider {
         badRes = BaseResponse(message: e.message);
       }
 
-      return handleError(e, badRes);
+      return Left(ServerFailure(handleError(e, badRes)));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
