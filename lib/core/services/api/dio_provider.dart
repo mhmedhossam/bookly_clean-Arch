@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bookia/core/services/api/base_response.dart';
 import 'package:bookia/core/services/api/failure.dart';
 import 'package:bookia/core/services/api/main_endpoints.dart';
@@ -27,7 +25,7 @@ class DioProvider {
     required T Function(dynamic) json,
   }) async {
     try {
-      Response response = await dio.post<T>(
+      Response response = await dio.post(
         endpoint,
         data: data,
         queryParameters: queryParameters,

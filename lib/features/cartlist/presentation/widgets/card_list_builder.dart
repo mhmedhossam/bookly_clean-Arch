@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bookia/core/constants/app_images.dart';
 import 'package:bookia/core/constants/navigation.dart';
 import 'package:bookia/core/constants/routes.dart';
@@ -45,6 +47,7 @@ class CardListBuilder extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        print(cubit.cartModel?.total);
         if (state is CartSucceedState) {
           if (cubit.cartItem.isEmpty) {
             return EmptyListWidget(

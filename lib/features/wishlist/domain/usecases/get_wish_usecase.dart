@@ -7,7 +7,6 @@ class GetWishUseCase extends WishUseCase {
   GetWishUseCase({required super.wishlistRepository});
 
   Future<Either<Failure, WishListResponse>> call() {
-    print("hoss");
     return wishlistRepository.getWishList();
   }
 }

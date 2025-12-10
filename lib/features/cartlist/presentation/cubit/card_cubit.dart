@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:bookia/core/services/api/dio_provider.dart';
 import 'package:bookia/core/services/local/shared_pref.dart';
 import 'package:bookia/features/auth/domain/entities/response/auth_response/user.dart';
 import 'package:bookia/features/cartlist/domain/entities/response/card_list_response/card_list_response.dart';
@@ -51,6 +52,8 @@ class CartCubit extends Cubit<CartStates> {
         emit(CartFailureState(message: l.errorMessage));
       },
       (r) {
+        cartModel = res.getRight();
+        cartItem = res.getRight().cartItems ?? [];
         emit(CartSucceedState());
       },
     );
@@ -65,6 +68,9 @@ class CartCubit extends Cubit<CartStates> {
         emit(CartFailureState(message: l.errorMessage));
       },
       (r) {
+        cartModel = res.getRight();
+
+        cartItem = res.getRight().cartItems ?? [];
         emit(CartSucceedState());
       },
     );
@@ -81,6 +87,9 @@ class CartCubit extends Cubit<CartStates> {
         emit(CartFailureState(message: l.errorMessage));
       },
       (r) {
+        cartModel = res.getRight();
+
+        cartItem = res.getRight().cartItems ?? [];
         emit(CartSucceedState());
       },
     );
@@ -90,14 +99,15 @@ class CartCubit extends Cubit<CartStates> {
     emit(CheckoutLoadingState());
 
     var res = await checkOutUseCase.call();
+
     if (isClosed) return;
 
     res.fold(
       (l) {
-        emit(CartFailureState(message: l.errorMessage));
+        emit(CheckoutFailureState(message: l.errorMessage));
       },
       (r) {
-        emit(CartSucceedState());
+        emit(CheckoutSucceedState());
       },
     );
   }
@@ -110,10 +120,13 @@ class CartCubit extends Cubit<CartStates> {
 
     res.fold(
       (l) {
-        emit(CartFailureState(message: l.errorMessage));
+        emit(PlaceOrderFailureState(message: l.errorMessage));
       },
       (r) {
-        emit(CartSucceedState());
+        cartModel = res.getRight();
+
+        cartItem = res.getRight().cartItems ?? [];
+        emit(PlaceOrderSucceedState());
       },
     );
   }

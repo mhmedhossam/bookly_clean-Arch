@@ -13,8 +13,7 @@ import 'package:bookia/features/auth/presentation/view/pass_changed.dart';
 import 'package:bookia/features/auth/presentation/view/register_screen.dart';
 import 'package:bookia/features/cartlist/domain/usecases/add_to_cart_use_case.dart';
 import 'package:bookia/features/cartlist/domain/usecases/check_out_repo_use_case.dart';
-import 'package:bookia/features/cartlist/domain/usecases/get_cart_list_use_case.dart'
-    show GetCartListUseCase;
+import 'package:bookia/features/cartlist/domain/usecases/get_cart_list_use_case.dart';
 import 'package:bookia/features/cartlist/domain/usecases/remove_from_cart.dart';
 import 'package:bookia/features/cartlist/domain/usecases/submit_order_usecase.dart';
 import 'package:bookia/features/cartlist/domain/usecases/update_item_cart_use_case.dart';
