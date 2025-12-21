@@ -1,5 +1,6 @@
+import 'package:bookia/core/error/exception.dart';
 import 'package:bookia/core/helper/checkInternet.dart';
-import 'package:bookia/core/services/api/failure.dart';
+import 'package:bookia/core/error/failure.dart';
 import 'package:bookia/features/profile/data/profile_data_source/profile_data_source.dart';
 import 'package:bookia/features/profile/domain/entities/response/get_profile_response/profile_response.dart';
 import 'package:bookia/features/profile/domain/entities/response/response_order_history/order_history_response.dart';
@@ -11,8 +12,12 @@ class ProfileRepositoryImpl extends ProfileRepository {
 
   ProfileRepositoryImpl({required this.profileDataSource});
   @override
-  Future<Either<Failure, OrderHistoryResponse>> getMyOrders() {
-    return isConnection<OrderHistoryResponse>(profileDataSource.getMyOrders());
+  Future<Either<Failure, OrderHistoryResponse>> getMyOrders() async {
+    try {
+      return Right(await profileDataSource.getMyOrders());
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    }
   }
 
   @override
@@ -20,9 +25,11 @@ class ProfileRepositoryImpl extends ProfileRepository {
     String name,
     String address,
     String phone,
-  ) {
-    return isConnection<ProfileResponse>(
-      profileDataSource.upDateProfile(name, address, phone),
-    );
+  ) async {
+    try {
+      return Right(await profileDataSource.upDateProfile(name, address, phone));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    }
   }
 }

@@ -1,5 +1,6 @@
+import 'package:bookia/core/error/exception.dart';
 import 'package:bookia/core/helper/checkInternet.dart';
-import 'package:bookia/core/services/api/failure.dart';
+import 'package:bookia/core/error/failure.dart';
 import 'package:bookia/core/services/local/shared_pref.dart';
 import 'package:bookia/features/auth/data/data_source/auth_datasource.dart';
 import 'package:bookia/features/auth/domain/entities/request/auth_data.dart';
@@ -15,50 +16,54 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<Either<Failure, AuthResponse>> login(
     AuthDataRequest authDataRequest,
   ) async {
-    var res = await isConnection<AuthResponse>(
-      authDatasource.login(authDataRequest),
-    );
-    return res.fold(
-      (l) {
-        return res;
-      },
-      (r) {
-        SharedPref.setToken(r.token);
-        SharedPref.setUserCache(r.user);
-        return res;
-      },
-    );
+    try {
+      return Right(await authDatasource.login(authDataRequest));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    }
   }
 
   @override
   Future<Either<Failure, AuthResponse>> register(
     AuthDataRequest authDataRequest,
   ) async {
-    return await isConnection<AuthResponse>(
-      authDatasource.register(authDataRequest),
-    );
+    try {
+      return Right(await authDatasource.register(authDataRequest));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    }
   }
 
   @override
   Future<Either<Failure, AuthResponse>> forgetPassword(
     AuthDataRequest authDataRequest,
   ) async {
-    return await isConnection<AuthResponse>(
-      authDatasource.forgetPassword(authDataRequest),
-    );
+    try {
+      return Right(await authDatasource.forgetPassword(authDataRequest));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    }
   }
 
   @override
   Future<Either<Failure, AuthResponse>> otpVerifyy(
     AuthDataRequest authDataRequest,
   ) async {
-    return await isConnection(authDatasource.otpVerifyy(authDataRequest));
+    try {
+      return Right(await authDatasource.otpVerify(authDataRequest));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    }
   }
 
   @override
   Future<Either<Failure, AuthResponse>> setNewPassword(
     AuthDataRequest authDataRequest,
   ) async {
-    return await isConnection(authDatasource.setNewPassword(authDataRequest));
+    try {
+      return Right(await authDatasource.setNewPassword(authDataRequest));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    }
   }
 }

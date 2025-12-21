@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:bookia/core/services/api/failure.dart';
+import 'package:bookia/core/error/failure.dart';
 import 'package:bookia/core/services/local/shared_pref.dart';
 import 'package:bookia/features/auth/domain/entities/response/auth_response/auth_response.dart';
 import 'package:bookia/features/auth/domain/entities/response/auth_response/user.dart';

@@ -54,8 +54,10 @@ class MyOrders extends StatelessWidget {
             }
           } else if (state is ProfileLoadingState) {
             return LottieBuilder.asset(AppImages.loadingIndicator);
+          } else if (state is ProfileFailureState) {
+            return Center(child: Text(state.message));
           } else {
-            return Center(child: Text("Error please try Again "));
+            return SizedBox();
           }
         },
       ),

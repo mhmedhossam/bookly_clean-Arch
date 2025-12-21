@@ -1,50 +1,86 @@
+import 'package:bookia/core/error/exception.dart';
+import 'package:bookia/core/error/failure.dart';
+import 'package:bookia/core/services/api/base_response.dart';
 import 'package:bookia/core/services/api/dio_provider.dart';
-import 'package:bookia/core/services/api/failure.dart';
 import 'package:bookia/features/home/data/data_source/home_datasource.dart';
 import 'package:bookia/features/home/data/repo/home_endpoints.dart';
 import 'package:bookia/features/home/domain/entities/all_products_model/product_model.dart';
 import 'package:bookia/features/home/domain/entities/slider_model/home_slider_model.dart';
-import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 
 class HomeDatasourceImpl extends HomeDatasource {
   @override
-  Future<Either<Failure, HomeSliderModel>> getSlider() async {
-    var res = await DioProvider.get<HomeSliderModel>(
-      HomeEndpoints.slider,
-      fromJson: (json) => HomeSliderModel.fromJson(json),
-    );
-
-    return res;
+  Future<HomeSliderModel> getSlider() async {
+    try {
+      var res = await DioProvider.get(HomeEndpoints.slider);
+      var baseModel = BaseResponse.fromJson(res.data);
+      if (baseModel.data is Map<String, dynamic>) {
+        return HomeSliderModel.fromJson(baseModel.data);
+      } else {
+        throw ServerException(message: "error please try again");
+      }
+    } on DioException catch (e) {
+      print("hwswsw");
+      throw ServerException(message: handleError(e));
+    } catch (e) {
+      throw ServerException(message: "error please try again");
+    }
   }
 
   @override
-  Future<Either<Failure, ProductModel>> getBestSellerProduct() async {
-    var res = await DioProvider.get<ProductModel>(
-      HomeEndpoints.productBestSeller,
-      fromJson: (json) => ProductModel.fromJson(json),
-    );
+  Future<ProductModel> getBestSellerProduct() async {
+    try {
+      var res = await DioProvider.get(HomeEndpoints.productBestSeller);
 
-    return res;
+      var baseModel = BaseResponse.fromJson(res.data);
+      if (baseModel.data is Map<String, dynamic>) {
+        return ProductModel.fromJson(baseModel.data);
+      } else {
+        throw ServerException(message: "error please try again");
+      }
+    } on DioException catch (e) {
+      throw ServerException(message: handleError(e));
+    } catch (e) {
+      throw ServerException(message: "error please try again");
+    }
   }
 
   @override
-  Future<Either<Failure, ProductModel>> getSearch(String product) async {
-    var res = await DioProvider.get<ProductModel>(
-      HomeEndpoints.searchProduct,
-      queryParameters: {"name": product},
-      fromJson: (json) => ProductModel.fromJson(json),
-    );
+  Future<ProductModel> getSearch(String product) async {
+    try {
+      var res = await DioProvider.get(
+        HomeEndpoints.searchProduct,
+        queryParameters: {"name": product},
+      );
 
-    return res;
+      var baseModel = BaseResponse.fromJson(res.data);
+      if (baseModel.data is Map<String, dynamic>) {
+        return ProductModel.fromJson(baseModel.data);
+      } else {
+        throw ServerException(message: "error please try again");
+      }
+    } on DioException catch (e) {
+      throw ServerException(message: handleError(e));
+    } catch (e) {
+      throw ServerException(message: "error please try again");
+    }
   }
 
   @override
-  Future<Either<Failure, ProductModel>> getAllProduct() async {
-    var res = await DioProvider.get<ProductModel>(
-      HomeEndpoints.product,
-      fromJson: (json) => ProductModel.fromJson(json),
-    );
+  Future<ProductModel> getAllProduct() async {
+    try {
+      var res = await DioProvider.get(HomeEndpoints.product);
 
-    return res;
+      var baseModel = BaseResponse.fromJson(res.data);
+      if (baseModel.data is Map<String, dynamic>) {
+        return ProductModel.fromJson(baseModel.data);
+      } else {
+        throw ServerException(message: "error please try again");
+      }
+    } on DioException catch (e) {
+      throw ServerException(message: handleError(e));
+    } catch (e) {
+      throw ServerException(message: "error please try again");
+    }
   }
 }

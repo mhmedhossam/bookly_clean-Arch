@@ -1,4 +1,4 @@
-import 'package:bookia/core/services/api/failure.dart';
+import 'package:bookia/core/error/failure.dart';
 import 'package:bookia/features/auth/domain/entities/request/auth_data.dart';
 import 'package:bookia/features/auth/domain/entities/response/auth_response/data.dart';
 import 'package:bookia/features/auth/domain/repo/auth_repository.dart';

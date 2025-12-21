@@ -1,4 +1,4 @@
-import 'package:bookia/core/services/api/failure.dart';
+import 'package:bookia/core/error/failure.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
 
@@ -7,9 +7,7 @@ Future<bool> checkConnection() async {
   return connectivity != ConnectivityResult.none;
 }
 
-Future<Either<Failure, T>> isConnection<T>(
-  Future<Either<Failure, T>> source,
-) async {
+Future<bool> isConnection() async {
   bool isConnected = await checkConnection();
-  return isConnected ? source : Left(NetworkFailure("no Internet connection"));
+  return isConnected;
 }

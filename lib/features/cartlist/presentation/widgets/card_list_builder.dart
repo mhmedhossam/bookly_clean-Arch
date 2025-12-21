@@ -1,14 +1,10 @@
-import 'dart:developer';
-
 import 'package:bookia/core/constants/app_images.dart';
 import 'package:bookia/core/constants/navigation.dart';
 import 'package:bookia/core/constants/routes.dart';
-import 'package:bookia/core/services/local/shared_pref.dart';
 import 'package:bookia/core/utils/app_colors.dart';
 import 'package:bookia/core/utils/text_styles.dart';
 import 'package:bookia/core/widgets/dialog.dart';
 import 'package:bookia/core/widgets/main_button.dart';
-import 'package:bookia/features/auth/domain/entities/response/auth_response/user.dart';
 import 'package:bookia/features/cartlist/presentation/cubit/card_cubit.dart';
 import 'package:bookia/features/cartlist/presentation/cubit/card_states.dart';
 import 'package:bookia/features/cartlist/presentation/widgets/cart_card.dart';
@@ -47,7 +43,6 @@ class CardListBuilder extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        print(cubit.cartModel?.total);
         if (state is CartSucceedState) {
           if (cubit.cartItem.isEmpty) {
             return EmptyListWidget(

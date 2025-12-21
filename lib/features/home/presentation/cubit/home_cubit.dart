@@ -1,5 +1,5 @@
 import 'package:bookia/core/services/api/dio_provider.dart';
-import 'package:bookia/core/services/api/failure.dart';
+import 'package:bookia/core/error/failure.dart';
 import 'package:bookia/features/cartlist/domain/usecases/add_to_cart_use_case.dart';
 import 'package:bookia/features/home/domain/entities/all_products_model/product_model.dart';
 import 'package:bookia/features/home/domain/entities/all_products_model/product.dart';
@@ -52,10 +52,11 @@ class HomeCubit extends Cubit<HomeStates> {
     final productRes = response[2] as Either<Failure, ProductModel>;
 
     if (sliderRes.isLeft()) {
+      print("hossam 3lk");
       emit(HomeFailure(message: sliderRes.getLeft().errorMessage));
 
       return;
-    } else {
+    } else if (sliderRes.isRight()) {
       sliders = sliderRes.getRight().sliders ?? [];
     }
 

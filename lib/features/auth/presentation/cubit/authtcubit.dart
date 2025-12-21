@@ -67,6 +67,8 @@ class Authtcubit extends Cubit<AuthStates> {
         emit(AuthFailure(errorMessage: l.errorMessage));
       },
       (r) {
+        SharedPref.setToken(r.token);
+        SharedPref.setUserCache(r.user);
         emit(AuthSucceeded());
       },
     );

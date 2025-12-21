@@ -1,10 +1,8 @@
-import 'package:bookia/core/services/api/failure.dart';
 import 'package:bookia/features/wishlist/domain/entities/response/wish_list_response.dart';
-import 'package:dartz/dartz.dart';
 
 abstract class WishlistDatasource {
-  Future<Either<Failure, WishListResponse>> getWishList();
-  Future<Either<Failure, WishListResponse>> addToWishList(int id);
+  Future<WishListResponse> getWishList();
+  Future<WishListResponse> addToWishList(int id);
 
-  Future<Either<Failure, WishListResponse>> removeFromWishList(int id);
+  Future<WishListResponse> removeFromWishList(int id);
 }

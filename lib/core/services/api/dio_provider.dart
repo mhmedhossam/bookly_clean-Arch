@@ -1,5 +1,6 @@
+import 'package:bookia/core/helper/checkInternet.dart';
 import 'package:bookia/core/services/api/base_response.dart';
-import 'package:bookia/core/services/api/failure.dart';
+import 'package:bookia/core/error/failure.dart';
 import 'package:bookia/core/services/api/main_endpoints.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -13,137 +14,80 @@ class DioProvider {
   static late Dio dio;
   init() {
     dio = Dio(BaseOptions(baseUrl: MainEndpoints.baseUrl));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          bool isConnected = await isConnection();
+          if (!isConnected) {
+            return handler.reject(
+              DioException(
+                requestOptions: options,
+                type: DioExceptionType.connectionError,
+                error: "No Internet Connection",
+              ),
+            );
+          }
+          return handler.next(options);
+        },
+      ),
+    );
   }
 
   static DioProvider get instance => DioProvider();
 
-  static Future<Either<Failure, T>> post<T>(
+  static Future<Response<dynamic>> post(
     endpoint, {
     required Object? data,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
-    required T Function(dynamic) json,
   }) async {
-    try {
-      Response response = await dio.post(
-        endpoint,
-        data: data,
-        queryParameters: queryParameters,
-        options: Options(headers: headers),
-      );
-      if (response.data is Map<String, dynamic>) {
-        var res = BaseResponse.fromJson(response.data);
-        return Right(json(res.data));
-      } else {
-        return Left(ServerFailure("error the json data return [] not map"));
-      }
-    } on DioException catch (e) {
-      var res = e.response?.data;
-      BaseResponse badRes;
-      if (res is Map<String, dynamic>) {
-        badRes = BaseResponse.fromJson(res);
-      } else {
-        badRes = BaseResponse(message: e.message);
-      }
-      return Left(ServerFailure(handleError(e, badRes)));
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
-    }
+    return await dio.post(
+      endpoint,
+      data: data,
+      queryParameters: queryParameters,
+      options: Options(headers: headers),
+    );
   }
 
-  static Future<Either<Failure, T>> get<T>(
+  static Future<Response<dynamic>> get(
     endpoint, {
     Object? data,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
-    required T Function(dynamic) fromJson,
   }) async {
-    try {
-      Response response = await dio.get(
-        endpoint,
-        data: data,
-        queryParameters: queryParameters,
-        options: Options(headers: headers),
-      );
-      if (response.data is Map<String, dynamic>) {
-        var res = BaseResponse.fromJson(response.data);
-
-        return Right(fromJson(res.data));
-      } else {
-        return Left(ServerFailure("error the json data return [] not map"));
-      }
-    } on DioException catch (e) {
-      var res = e.response?.data;
-      BaseResponse badRes;
-      if (res is Map<String, dynamic>) {
-        badRes = BaseResponse.fromJson(res);
-      } else {
-        badRes = BaseResponse(message: e.message);
-      }
-
-      return Left(ServerFailure(handleError(e, badRes)));
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
-    }
+    return await dio.get(
+      endpoint,
+      data: data,
+      queryParameters: queryParameters,
+      options: Options(headers: headers),
+    );
   }
 
-  static Future<Either<Failure, T>> patch<T>(
+  static Future<Response<dynamic>> patch(
     endpoint, {
     required Object? data,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
-    required T Function(dynamic) json,
   }) async {
-    try {
-      Response response = await dio.patch(
-        endpoint,
-        data: data,
-        queryParameters: queryParameters,
-        options: Options(headers: headers),
-      );
-      return Right(json(response.data));
-    } on DioException catch (e) {
-      var res = e.response?.data;
-      BaseResponse badRes;
-      if (res is Map<String, dynamic>) {
-        badRes = BaseResponse.fromJson(res);
-      } else {
-        badRes = BaseResponse(message: e.message);
-      }
-
-      return Left(ServerFailure(handleError(e, badRes)));
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
-    }
+    return await dio.patch(
+      endpoint,
+      data: data,
+      queryParameters: queryParameters,
+      options: Options(headers: headers),
+    );
   }
 
-  static Future<Either<Failure, T>> delete<T>(
+  static Future<Response<dynamic>> delete(
     endpoint, {
     required Object? data,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
-    required T Function(dynamic) json,
   }) async {
-    try {
-      Response response = await dio.delete(
-        endpoint,
-        data: data,
-        queryParameters: queryParameters,
-        options: Options(headers: headers),
-      );
-      return Right(json(response.data));
-    } on DioException catch (e) {
-      var res = e.response?.data;
-      BaseResponse badRes;
-      if (res is Map<String, dynamic>) {
-        badRes = BaseResponse.fromJson(res);
-      } else {
-        badRes = BaseResponse(message: e.message);
-      }
-
-      return Left(ServerFailure(handleError(e, badRes)));
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
-    }
+    return await dio.delete(
+      endpoint,
+      data: data,
+      queryParameters: queryParameters,
+      options: Options(headers: headers),
+    );
   }
 }

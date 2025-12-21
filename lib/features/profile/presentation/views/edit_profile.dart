@@ -55,7 +55,7 @@ class _EditProfileState extends State<EditProfile> {
             Navigation.pop(context);
           } else if (state is ProfileFailureState) {
             context.pop();
-            showMyDialog(context, "Update failed", Dialogtype.error);
+            showMyDialog(context, state.message, Dialogtype.error);
           }
         },
         child: SingleChildScrollView(

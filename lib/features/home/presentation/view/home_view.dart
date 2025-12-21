@@ -74,8 +74,10 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           } else if (state is HomeFailure) {
             return Center(child: Text(state.message ?? ""));
-          } else {
+          } else if (state is HomeLoading) {
             return Center(child: Lottie.asset('assets/images/Open book.json'));
+          } else {
+            return SizedBox.shrink();
           }
         },
       ),
